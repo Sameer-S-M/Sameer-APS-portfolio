@@ -1,4 +1,4 @@
-import { Github, ExternalLink, Lock } from 'lucide-react';
+import { ExternalLink, Lock } from 'lucide-react';
 import { Button } from './ui/button';
 
 const Projects = () => {
@@ -13,8 +13,7 @@ const Projects = () => {
         "Product bundling insights",
         "Demo web app integration",
       ],
-      github: null, // Indicates private
-      website: "https://visionbasedbillingsystem.streamlit.app/",
+      implementation: "https://drive.google.com/file/d/1ymZH22SsH1jmcb0eYTxOeCdYRFiPXQpx/view?usp=sharing", // Indicates private
     },
     {
       title: "Quantized ResNet50 for FL",
@@ -26,8 +25,7 @@ const Projects = () => {
         "Reduced inference latency",
         "Federated training setup",
       ],
-      github: null,
-      website: "https://quantized-resnet50.streamlit.app/",
+      implementation: "https://github.com/Sameer-S-M/Quantized_ResNet50_for_FL.git",
     },
     {
       title: "Thyroid Disease EDA",
@@ -35,7 +33,7 @@ const Projects = () => {
         "Conducted extensive exploratory data analysis on thyroid disease dataset to identify patterns and correlations. Implemented various visualization techniques for better understanding of the data.",
       tools: "Python, Pandas, Seaborn, Matplotlib",
       highlights: ["Data visualization", "Statistical analysis", "Pattern recognition"],
-      github: null, // Private
+      implementation: "https://sites.google.com/view/sameer-eda-portfolio?usp=sharing",
     },
     {
       title: "English–Kannada Translation",
@@ -47,77 +45,63 @@ const Projects = () => {
         "Fine-tuned for Kannada",
         "Low-resource adaptation",
       ],
-      github: null, // Private
+      implementation: "https://github.com/Sameer-S-M/English-Kannada-Translation-using-MarianMT.git",
     },
   ];
 
   return (
-    <section id="projects" className="py-20">
+    <section id="projects" className="py-20 bg-white dark:bg-gray-900 transition-colors duration-300">
       <div className="container mx-auto px-6">
-        <h2 className="text-3xl font-bold text-center mb-12 bg-gradient-to-r from-slate-700 to-slate-900 text-transparent bg-clip-text">
+        <h2 className="text-3xl font-bold text-center mb-12 bg-gradient-to-r from-slate-700 to-slate-900 dark:from-purple-600 dark:to-pink-500 text-transparent bg-clip-text">
           Projects
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
           {projects.map((project, index) => (
             <div
               key={project.title}
-              className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-8 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
+              className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl shadow-xl p-8 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
               style={{ animationDelay: `${index * 200}ms` }}
             >
-              <h3 className="text-xl font-bold mb-4 text-gray-800">{project.title}</h3>
-              <p className="text-gray-600 mb-4">{project.description}</p>
+              <h3 className="text-xl font-bold mb-4 text-gray-800 dark:text-gray-100">{project.title}</h3>
+              <p className="text-gray-600 dark:text-gray-300 mb-4 text-justify">{project.description}</p>
               <div className="space-y-2 mb-4">
                 {project.highlights.map((highlight, i) => (
                   <span
                     key={i}
-                    className="inline-block px-3 py-1 rounded-full text-sm font-medium bg-slate-100 text-slate-800 mr-2 mb-2"
+                    className="inline-block px-3 py-1 rounded-full text-sm font-medium bg-slate-100 dark:bg-gray-700 text-slate-800 dark:text-gray-300 mr-2 mb-2"
                   >
                     {highlight}
                   </span>
                 ))}
               </div>
-              <div className="mt-4 pt-4 border-t border-gray-200">
-                <p className="text-sm font-medium text-gray-500 mb-4">
-                  Tools: {project.tools}
-                </p>
-                <div className="flex gap-4">
-                  {project.github ? (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="flex items-center gap-2"
-                      asChild
-                    >
-                      <a href={project.github} target="_blank" rel="noopener noreferrer">
-                        <Github size={16} />
-                        GitHub
-                      </a>
-                    </Button>
-                  ) : (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="flex items-center gap-2 text-gray-400 cursor-not-allowed"
-                      disabled
-                    >
-                      <Lock size={16} />
-                      GitHub (Private)
-                    </Button>
-                  )}
-                  {project.website && (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="flex items-center gap-2"
-                      asChild
-                    >
-                      <a href={project.website} target="_blank" rel="noopener noreferrer">
-                        <ExternalLink size={16} />
-                        Live Demo
-                      </a>
-                    </Button>
-                  )}
-                </div>
+              
+              <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-4 text-justify">
+                Tools: {project.tools}
+              </p>
+              <div className="flex gap-4">
+                {project.implementation ? (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="flex items-center gap-2"
+                    asChild
+                  >
+                    <a href={project.implementation} target="_blank" rel="noopener noreferrer">
+                      <ExternalLink size={16} />
+                      See Implementation
+                    </a>
+                  </Button>
+                ) : (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="flex items-center gap-2 text-gray-400 dark:text-gray-500 cursor-not-allowed"
+                    disabled
+                  >
+                    <Lock size={16} />
+                    Implementation (Private)
+                  </Button>
+                )}
               </div>
             </div>
           ))}

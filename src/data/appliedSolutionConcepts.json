@@ -1,0 +1,1343 @@
+{
+  "appliedSolutionConcepts": [
+    {
+      "id": "dynamic-multiplayer-matchmaking",
+      "title": "Dynamic Multiplayer Matchmaking Optimization",
+      "overview": "Modern multiplayer gaming demands low-latency, skill-balanced matchmaking that adapts to dynamic player pools. This solution combines spatial partitioning, real-time skill tracking, and combinatorial optimization to minimize wait times while ensuring fair team compositions. By leveraging KD-Trees for proximity-based player searches, Segment Trees for instantaneous skill updates, and the Stable Marriage Problem for role-based team balancing, the system achieves sub-logarithmic query times and stability guarantees. The architecture is designed for Sony's high-concurrency environments (e.g., PlayStation Network), where traditional brute-force matching fails to scale.",
+      "keywords": [
+        "Spatial Partitioning",
+        "Range Queries",
+        "Combinatorial Optimization"
+      ],
+      "algorithmicBackbone": [
+        {
+          "title": "KD-Tree Nearest-Neighbor Search for Low-Latency Player Matching",
+          "concept": "KD-Tree Nearest-Neighbor Search",
+          "application": "Accelerates player searches by organizing the matchmaking pool into a 2D space (skill × latency). Splits alternate axes to prune irrelevant players during queries, reducing comparisons from O(n) to O(log n). Ideal for Sony's battle royale or FPS titles where regional latency and skill parity are critical.",
+          "imageUrl": "public/KD-Tree.png",
+          "workflowUrl": "public/1.1.png",
+          "advantages": [
+            "Scalability: Handles 1M+ players",
+            "Adaptive: Auto-rebalances tree as players join/leave",
+            "Worst-case mitigation: Falls back to O(n) only with extreme skill skew"
+          ],
+          "complexity": {
+            "operations": [
+              {
+                "name": "Insertion",
+                "averageCase": "O(log n)",
+                "worstCase": "O(n)"
+              },
+              {
+                "name": "Query",
+                "averageCase": "O(log n)",
+                "worstCase": "O(n)"
+              },
+              {
+                "name": "Space",
+                "averageCase": "O(n)",
+                "worstCase": "O(n)"
+              }
+            ]
+          },
+          "timeComplexity": {
+            "best": "O(log n)",
+            "worst": "O(n)"
+          },
+          "spaceComplexity": {
+            "best": "O(n)",
+            "worst": "O(n)"
+          },
+          "codeLink": "https://github.com/Sameer-S-M/APS-Codes/blob/main/KD_Tree.cpp"
+        },
+        {
+          "title": "Segment Tree for Dynamic Skill Updates",
+          "concept": "Segment Tree for Dynamic Skill Updates",
+          "application": "Maintains a real-time skill hierarchy via a Segment Tree, enabling O(log n) updates and range queries (e.g., \"find all players with skill 50–60\"). Critical for Sony's ranked modes where skill inflation/deflation must be reflected instantly.",
+          "imageUrl": "public/segement-tree.png",
+          "workflowUrl": "public/1.2.png",
+          "advantages": [
+            "Real-time sync: No batch processing needed",
+            "Precision: Avoids \"skill drift\" seen in ELO-only systems"
+          ],
+          "complexity": {
+            "operations": [
+              {
+                "name": "Update",
+                "averageCase": "O(log n)",
+                "worstCase": "O(log n)"
+              },
+              {
+                "name": "Range Query",
+                "averageCase": "O(log n + k)",
+                "worstCase": "O(log n + k)"
+              },
+              {
+                "name": "Space",
+                "averageCase": "O(n)",
+                "worstCase": "O(n)"
+              }
+            ]
+          },
+          "timeComplexity": {
+            "best": "O(log n)",
+            "worst": "O(log n)"
+          },
+          "spaceComplexity": {
+            "best": "O(n)",
+            "worst": "O(n)"
+          },
+          "codeLink": "https://github.com/Sameer-S-M/APS-Codes/blob/main/Segment-tree.cpp"
+        },
+        {
+          "title": "Stable Marriage Problem for Team Balancing",
+          "concept": "Stable Marriage Problem for Team Balancing",
+          "application": "Uses the Gale-Shapley algorithm to pair players into teams based on role preferences (e.g., healer + tank) and skill complementarity. Ensures no player-team pair would mutually prefer each other over their current match—a key feature for Sony's cooperative RPGs/esports.",
+          "imageUrl": "public/StableMarriage.png",
+          "workflowUrl": "public/1.3.png",
+          "advantages": [
+            "Stability: Eliminates \"unfair team\" grievances",
+            "Flexibility: Incorporates role weights (e.g., priority for healers)"
+          ],
+          "complexity": {
+            "operations": [
+              {
+                "name": "Matching",
+                "averageCase": "O(n²)",
+                "worstCase": "O(n²)"
+              },
+              {
+                "name": "Space",
+                "averageCase": "O(n²)",
+                "worstCase": "O(n²)"
+              }
+            ]
+          },
+          "timeComplexity": {
+            "best": "O(n²)",
+            "worst": "O(n²)"
+          },
+          "spaceComplexity": {
+            "best": "O(n²)",
+            "worst": "O(n²)"
+          },
+          "codeLink": "https://github.com/Sameer-S-M/APS-Codes/blob/main/Stable_Marriage.cpp"
+        }
+      ],
+      "overallOutcome": [
+        "Faster matchmaking vs. brute-force (KD-Tree)",
+        "Zero-delay skill updates (Segment Tree)",
+        "Fewer team imbalances (Stable Marriage)"
+      ],
+      "overallTradeoffs": [
+        "KD-Tree: Memory overhead for tree integrity",
+        "Stable Marriage: Quadratic time for large teams (mitigated by pre-filtering via KD-Tree)"
+      ],
+      "overallBusinessUseCase": [
+        "PlayStation Plus Retention: Reduce player churn from frustrating matches",
+        "Esports Integrity: Fair team setups for tournaments",
+        "Cross-Platform Scaling: Efficiently handle mixed PC/console pools"
+      ],
+      "references": [
+        {
+          "text": "K-Dimensional Tree: Search and Insertion Implementation Guide",
+          "url": "https://www.geeksforgeeks.org/search-and-insertion-in-k-dimensional-tree/"
+        },
+        {
+          "text": "Segment Tree: Efficient Range Query Data Structure",
+          "url": "https://www.geeksforgeeks.org/segment-tree-data-structure/"
+        },
+        {
+          "text": "Stable Marriage Problem: Algorithm and Implementation",
+          "url": "https://www.geeksforgeeks.org/stable-marriage-problem/"
+        },
+        {
+          "text": "Gale-Shapley Algorithm: Mathematical Foundation",
+          "url": "https://en.wikipedia.org/wiki/Gale%E2%80%93Shapley_algorithm"
+        },
+        {
+          "text": "Dynamic Multiplayer Game Matchmaking System Patent",
+          "url": "https://patents.google.com/patent/US20160001181A1/en"
+        }
+      ]
+    },
+    {
+      "id": "real-time-leaderboards",
+      "title": "Real-Time Leaderboards and Ranking Systems",
+      "overview": "Modern gaming platforms require leaderboards that update in real-time while supporting historical data analysis and dynamic score adjustments. This solution leverages Persistent Segment Trees for time-travel queries (e.g., \"What was Player X's rank at timestamp T?\"), Fenwick Trees for efficient score updates and prefix sums, and MAX Heaps for instant top-K player retrieval. The system ensures O(log n) operations for updates/queries, making it ideal for Sony's high-traffic environments (e.g., PlayStation Network tournaments or live-service games), where latency and accuracy are critical.",
+      "keywords": [
+        "Historical Queries",
+        "Prefix Sums",
+        "Top-K Retrieval",
+        "Real-Time Updates"
+      ],
+      "algorithmicBackbone": [
+        {
+          "title": "Persistent Segment Tree for Historical Data Analysis",
+          "concept": "Persistent Segment Tree",
+          "application": "Tracks leaderboard state across time, enabling queries like \"Show top 10 players at the end of last season.\" Each update creates a new version of the tree, preserving past states without duplication. Critical for Sony's replay/audit features.",
+          "imageUrl": "public/Persistent-Segment-Tree.png",
+          "workflowUrl": "public/2.1.png",
+          "advantages": [
+            "Temporal precision: Compare leaderboards across arbitrary timestamps",
+            "Space-efficient: Shares unchanged nodes between versions (O(log n) per update)"
+          ],
+          "complexity": {
+            "operations": [
+              {
+                "name": "Update",
+                "averageCase": "O(log n)",
+                "worstCase": "O(log n)"
+              },
+              {
+                "name": "Historical Query",
+                "averageCase": "O(log n)",
+                "worstCase": "O(log n)"
+              },
+              {
+                "name": "Space",
+                "averageCase": "O(n log n)",
+                "worstCase": "O(n log n)"
+              }
+            ]
+          },
+          "timeComplexity": {
+            "best": "O(log n)",
+            "worst": "O(log n)"
+          },
+          "spaceComplexity": {
+            "best": "O(n log n)",
+            "worst": "O(n log n)"
+          },
+          "codeLink": "https://github.com/Sameer-S-M/APS-Codes/blob/main/Persistent-seg-tree.cpp"
+        },
+        {
+          "title": "Fenwick Tree for Real-Time Score Aggregation",
+          "concept": "Fenwick Tree",
+          "application": "Maintains prefix sums of player scores for instant rank calculations (e.g., \"How many players are within 100 points of the leader?\"). Supports O(log n) point updates (e.g., score changes) and prefix queries.",
+          "imageUrl": "public/Fenwick-Tree.png",
+          "workflowUrl": "public/2.2.png",
+          "advantages": [
+            "Low-latency",
+            "Embeddable: Lightweight (array-based) for edge devices"
+          ],
+          "complexity": {
+            "operations": [
+              {
+                "name": "Update",
+                "averageCase": "O(log n)",
+                "worstCase": "O(log n)"
+              },
+              {
+                "name": "Prefix Sum",
+                "averageCase": "O(log n)",
+                "worstCase": "O(log n)"
+              },
+              {
+                "name": "Space",
+                "averageCase": "O(n)",
+                "worstCase": "O(n)"
+              }
+            ]
+          },
+          "timeComplexity": {
+            "best": "O(log n)",
+            "worst": "O(log n)"
+          },
+          "spaceComplexity": {
+            "best": "O(n)",
+            "worst": "O(n)"
+          },
+          "codeLink": "https://github.com/Sameer-S-M/APS-Codes/blob/main/Fenwick_tree.cpp"
+        },
+        {
+          "title": "MAX Heap for Top-K Player Retrieval",
+          "concept": "MAX Heap",
+          "application": "Provides O(1) access to the top-ranked player and O(log n) insertions/deletions. Ideal for Sony's live leaderboards where the \"top 100\" must refresh instantly.",
+          "imageUrl": "public/Max-Heap.png",
+          "workflowUrl": "public/2.3.png",
+          "advantages": [
+            "Real-time UI updates: Sub-millisecond top-K retrieval",
+            "Scalability: Independent of total player count (focuses on leaders only)"
+          ],
+          "complexity": {
+            "operations": [
+              {
+                "name": "Insert",
+                "averageCase": "O(log n)",
+                "worstCase": "O(log n)"
+              },
+              {
+                "name": "Get Max",
+                "averageCase": "O(1)",
+                "worstCase": "O(1)"
+              },
+              {
+                "name": "Space",
+                "averageCase": "O(n)",
+                "worstCase": "O(n)"
+              }
+            ]
+          },
+          "timeComplexity": {
+            "best": "O(1)",
+            "worst": "O(log n)"
+          },
+          "spaceComplexity": {
+            "best": "O(n)",
+            "worst": "O(n)"
+          },
+          "codeLink": "https://github.com/Sameer-S-M/APS-Codes/blob/main/max_heap.cpp"
+        }
+      ],
+      "overallOutcome": [
+        "Real-time leaderboards with sub-second latency for large number of players",
+        "Time-travel analytics for seasonal/event comparisons",
+        "Resource efficiency: Lower memory than SQL-based solutions"
+      ],
+      "overallTradeoffs": [
+        "Persistent Trees: Higher initial setup complexity",
+        "MAX Heap: Less efficient for mid-tier ranks (optimized for top-K)"
+      ],
+      "overallBusinessUseCase": [
+        "Esports Engagement: Live leaderboards for tournaments (e.g., Gran Turismo races)",
+        "Player Retention: Historical stats to showcase progress",
+        "Anti-Cheat: Detect score anomalies via temporal queries"
+      ],
+      "references": [
+        {
+          "text": "Persistent Segment Tree: Introduction and Implementation",
+          "url": "https://www.geeksforgeeks.org/persistent-segment-tree-set-1-introduction/"
+        },
+        {
+          "text": "Binary Indexed Tree (Fenwick Tree): Efficient Range Query Structure",
+          "url": "https://www.geeksforgeeks.org/binary-indexed-tree-or-fenwick-tree-2/"
+        },
+        {
+          "text": "Max Heap: Data Structure for Top-K Retrieval",
+          "url": "https://www.geeksforgeeks.org/introduction-to-max-heap-data-structure/"
+        },
+        {
+          "text": "System Design: Real-time Ranking Leaderboard Architecture",
+          "url": "https://medium.com/@choudharys710/hld-realtime-ranking-leaderboard-for-a-multiplayer-game-67332a083252"
+        }
+      ]
+    },
+    {
+      "id": "smart-loan-approval",
+      "title": "Smart Loan Approval Engine",
+      "overview": "Sony's financial services (e.g., Sony Bank) require a loan approval system that balances speed with robust fraud detection. This engine combines sequence analysis (LCS) for individual behavioral anomalies, graph clustering (Boruvka's) for organized fraud rings, and cryptographic hashing (Fermat's) for data integrity. The system achieves O(n log n) fraud checks while minimizing false positives, critical for high-volume micro-loans or PlayStation Store credit approvals.",
+      "keywords": [
+        "Sequence Alignment (LCS)",
+        "Graph Clustering",
+        "Cryptographic Hashing"
+      ],
+      "algorithmicBackbone": [
+        {
+          "title": "Longest Common Subsequence (LCS) for Behavioral Analysis",
+          "concept": "Longest Common Subsequence",
+          "application": "Detects suspicious patterns in user transaction sequences by comparing against known fraud patterns. Adapts the classic LCS algorithm to handle weighted matches, giving higher scores to high-risk transaction types.",
+          "imageUrl": "public/LCS.png",
+          "workflowUrl": "public/3.1.png",
+          "advantages": [
+            "Pattern Recognition: high accuracy on known fraud sequences",
+            "Adaptability: Can update fraud patterns without code changes",
+            "Low Latency: Sub-millisecond pattern matching"
+          ],
+          "complexity": {
+            "operations": [
+              {
+                "name": "Pattern Match",
+                "averageCase": "O(mn)",
+                "worstCase": "O(mn)"
+              },
+              {
+                "name": "Space",
+                "averageCase": "O(mn)",
+                "worstCase": "O(mn)"
+              }
+            ]
+          },
+          "timeComplexity": {
+            "best": "O(m+n)",
+            "worst": "O(mn)"
+          },
+          "spaceComplexity": {
+            "best": "O(min(m,n))",
+            "worst": "O(mn)"
+          },
+          "codeLink": "https://github.com/Sameer-S-M/APS-Codes/blob/main/LCS.cpp"
+        },
+        {
+          "title": "Boruvka's Algorithm for Fraud Ring Detection",
+          "concept": "Boruvka's Algorithm for Fraud Ring Detection",
+          "application": "Identifies coordinated fraud by clustering users who share devices/IPs into a Minimum Spanning Tree (MST). Isolates dense subgraphs (e.g., 10 users linked to one device) as fraud rings.",
+          "imageUrl": "public/Boruvka.png",
+          "workflowUrl": "public/3.2.png",
+          "advantages": [
+            "Scalability: Processes large number of edges in O(E log V) time.",
+            "Uncovers Collusion: Detects \"money mule\" networks."
+          ],
+          "complexity": {
+            "operations": [
+              {
+                "name": "MST Construction",
+                "averageCase": "O(E log V)",
+                "worstCase": "O(E log V)"
+              },
+              {
+                "name": "Space",
+                "averageCase": "O(V + E)",
+                "worstCase": "O(V + E)"
+              }
+            ]
+          },
+          "timeComplexity": {
+            "best": "O(E log V)",
+            "worst": "O(E log V)"
+          },
+          "spaceComplexity": {
+            "best": "O(V + E)",
+            "worst": "O(V + E)"
+          },
+          "codeLink": "https://github.com/Sameer-S-M/APS-Codes/blob/main/Boruvkas.cpp"
+        },
+        {
+          "title": "Fermat's Little Theorem for Data Integrity",
+          "concept": "Fermat's Little Theorem for Secure Hashing",
+          "application": "Generates tamper-proof hashes of transaction data (e.g., \"User123:$100:PlayStationStore\") using modular exponentiation (a^(p-1) ≡ 1 mod p). Enables quick integrity checks without storing raw data.",
+          "imageUrl": "public/fermat.png",
+          "workflowUrl": "public/3.3.png",
+          "advantages": [
+            "Privacy: No PII storage (only hashes).",
+            "Speed: O(1) verification via modular arithmetic."
+          ],
+          "complexity": {
+            "operations": [
+              {
+                "name": "Hash Generation",
+                "averageCase": "O(1)",
+                "worstCase": "O(1)"
+              },
+              {
+                "name": "Verification",
+                "averageCase": "O(1)",
+                "worstCase": "O(1)"
+              }
+            ]
+          },
+          "timeComplexity": {
+            "best": "O(1)",
+            "worst": "O(1)"
+          },
+          "spaceComplexity": {
+            "best": "O(1)",
+            "worst": "O(1)"
+          },
+          "codeLink": "https://github.com/Sameer-S-M/APS-Codes/blob/main/Fermats_little_theorem.cpp"
+        }
+      ],
+      "overallOutcome": [
+        "Higher rate of fraud ring detection (Boruvka's) + High individual fraud catch rate (LCS).",
+        "Faster hash verification (Fermat's) for compliance."
+      ],
+      "overallTradeoffs": [
+        "LCS: Higher memory usage for sequence comparison",
+        "Boruvka's: Initial graph construction overhead",
+        "Fermat's: Prime number constraints"
+      ],
+      "overallBusinessUseCase": [
+        "Sony Bank: Automated loan decisioning",
+        "PlayStation Store: Credit line approval",
+        "Sony Financial Holdings: Fraud prevention"
+      ],
+      "references": [
+        {
+          "text": "Borůvka's Algorithm: Minimum Spanning Tree Construction",
+          "url": "https://en.wikipedia.org/wiki/Bor%C5%AFvka%27s_algorithm"
+        },
+        {
+          "text": "Fermat's Little Theorem: Mathematical Foundation",
+          "url": "https://en.wikipedia.org/wiki/Fermat%27s_little_theorem#:~:text=In%20number%20theory%2C%20Fermat's%20little,an%20integer%20multiple%20of%207."
+        },
+        {
+          "text": "Longest Common Subsequence: Dynamic Programming Implementation",
+          "url": "https://www.geeksforgeeks.org/longest-common-subsequence-dp-4/"
+        },
+        {
+          "text": "Boruvka's Algorithm: Detailed Implementation Guide",
+          "url": "https://www.geeksforgeeks.org/boruvkas-algorithm-greedy-algo-9/"
+        },
+        {
+          "text": "Fermat's Little Theorem: Implementation and Applications",
+          "url": "https://www.geeksforgeeks.org/fermats-little-theorem/"
+        }
+      ]
+    },
+    {
+      "id": "intelligent-support-ticket",
+      "title": "Intelligent Support Ticket Prioritization",
+      "overview": "Sony's customer support teams face high-volume ticket inflows with varying urgency, complexity, and skill requirements. This system leverages Mo's Algorithm to batch-process similar tickets offline, Longest Common Substring (LCS) to auto-group duplicate issues, and A* Search to optimally route tickets to agents based on skill-urgency tradeoffs. The hybrid approach reduces average resolution time by 30–50% while ensuring critical issues (e.g., PSN outages) skip queues intelligently.",
+      "keywords": [
+        "Batch Processing",
+        "Duplicate Detection (LCS)",
+        "A* Search"
+      ],
+      "algorithmicBackbone": [
+        {
+          "title": "Mo's Algorithm for Batch Processing",
+          "concept": "Mo's Algorithm",
+          "application": "Groups tickets into √n-sized blocks and reorders queries to maximize cache reuse when detecting similar issues (e.g., \"PS5 controller drift\"). This technique optimizes ticket clustering by sorting queries to exploit temporal locality, reducing processing overhead. It supports the solution by efficiently grouping related tickets, minimizing redundant agent effort. The approach aligns with real-world ticket surges, such as post-update issue spikes.",
+          "imageUrl": "public/Mo.png",
+          "workflowUrl": "public/4.1.png",
+          "advantages": [
+            "Offline Efficiency: fewer live agent interventions",
+            "Scalability: O(n√n) vs. O(n²) for brute-force clustering"
+          ],
+          "complexity": {
+            "operations": [
+              {
+                "name": "Batch Clustering",
+                "averageCase": "O(n√n)",
+                "worstCase": "O(n√n)"
+              },
+              {
+                "name": "Space",
+                "averageCase": "O(n)",
+                "worstCase": "O(n)"
+              }
+            ]
+          },
+          "timeComplexity": {
+            "best": "O(n√n)",
+            "worst": "O(n√n)"
+          },
+          "spaceComplexity": {
+            "best": "O(n)",
+            "worst": "O(n)"
+          },
+          "codeLink": "https://github.com/Sameer-S-M/APS-Codes/blob/main/Mo.cpp"
+        },
+        {
+          "title": "Longest Common Substring (LCS) for Duplicate Detection",
+          "concept": "Longest Common Substring",
+          "application": "Identifies near-identical tickets (e.g., \"PSN login failed\" vs. \"Can't sign in to PSN\") by finding maximal shared substrings. This method uses dynamic programming to detect duplicate or similar tickets, consolidating them into master tickets. It supports the solution by reducing agent workload through automated issue merging. The technique ensures precise identification of recurring problems, enhancing support efficiency. Auto-merges duplicates into master tickets, reducing agent workload.",
+          "imageUrl": "public/LCString.png",
+          "workflowUrl": "public/4.2.png",
+          "advantages": [
+            "Precision: Ignores superficial differences (e.g., typos)",
+            "Resource Savings: fewer redundant tickets"
+          ],
+          "complexity": {
+            "operations": [
+              {
+                "name": "LCS Calculation",
+                "averageCase": "O(n*m)",
+                "worstCase": "O(n*m)"
+              },
+              {
+                "name": "Space",
+                "averageCase": "O(n*m)",
+                "worstCase": "O(n*m)"
+              }
+            ]
+          },
+          "timeComplexity": {
+            "best": "O(n*m)",
+            "worst": "O(n*m)"
+          },
+          "spaceComplexity": {
+            "best": "O(n*m)",
+            "worst": "O(n*m)"
+          },
+          "codeLink": "https://github.com/Sameer-S-M/APS-Codes/blob/main/LCString.cpp"
+        },
+        {
+          "title": "A* Search for Optimal Ticket Routing",
+          "concept": "A* Search",
+          "application": "Routes tickets through a team-skill graph where nodes are agents and edges are skill-urgency matches. Uses g(n) = Current queue load of agent, h(n) = Heuristic of agent's expertise match (e.g., \"Level 3 Networking\"). Minimizes total resolution latency by prioritizing both skill fit and availability.",
+          "imageUrl": "public/AStar.png",
+          "workflowUrl": "public/4.3.png",
+          "advantages": [
+            "Balanced Loads: Prevents agent burnout (vs. pure round-robin)",
+            "Critical-Item Priority: Escalates VIP/outage tickets faster"
+          ],
+          "complexity": {
+            "operations": [
+              {
+                "name": "Pathfinding",
+                "averageCase": "O(E + V log V)",
+                "worstCase": "O(E + V log V)"
+              },
+              {
+                "name": "Space",
+                "averageCase": "O(V)",
+                "worstCase": "O(V)"
+              }
+            ]
+          },
+          "timeComplexity": {
+            "best": "O(E + V log V)",
+            "worst": "O(E + V log V)"
+          },
+          "spaceComplexity": {
+            "best": "O(V)",
+            "worst": "O(V)"
+          },
+          "codeLink": "https://github.com/Sameer-S-M/APS-Codes/blob/main/A_star.cpp"
+        }
+      ],
+      "overallOutcome": [
+        "Faster resolutions via batch clustering + optimal routing",
+        "Fewer duplicate tickets (LCS)",
+        "Dynamic scaling: Handles huge number of tickets/day with Mo's + A*"
+      ],
+      "overallTradeoffs": [
+        "Mo's Algorithm: Requires periodic reclustering (daily/off-peak)",
+        "A* Search: Heuristic design complexity (trade skill vs. urgency)"
+      ],
+      "overallBusinessUseCase": [
+        "PlayStation Support: Optimize agent workload",
+        "Sony Electronics: Warranty claim processing",
+        "Global Support: Multi-language ticket routing"
+      ],
+      "references": [
+        {
+          "text": "A* Search Algorithm: Theoretical Foundation and Analysis",
+          "url": "https://en.wikipedia.org/wiki/A%2A_search_algorithm?utm_source=chatgpt.com"
+        },
+        {
+          "text": "Range Minimum Queries using Binary Indexed Trees",
+          "url": "https://stackoverflow.com/questions/20800375/solving-range-minimum-queries-using-binary-indexed-trees-fenwick-trees?utm_source=chatgpt.com"
+        },
+        {
+          "text": "Longest Common Substring: Dynamic Programming Approach",
+          "url": "https://www.geeksforgeeks.org/longest-common-substring-dp-29/"
+        },
+        {
+          "text": "Mo's Algorithm: Query Square Root Decomposition",
+          "url": "https://www.geeksforgeeks.org/mos-algorithm-query-square-root-decomposition-set-1-introduction/"
+        },
+        {
+          "text": "A* Search Algorithm: Implementation and Pathfinding",
+          "url": "https://www.geeksforgeeks.org/a-search-algorithm/"
+        }
+      ]
+    },
+    {
+      "id": "personalized-game-recommendation",
+      "title": "Personalized Game Recommendation Engine for PSN",
+      "overview": "Modern gaming platforms require recommendation systems that balance social influence, personal constraints, and real-time trends. This solution combines network analysis (PageRank), playtime optimization (0/1 Knapsack), and efficient range queries (Sparse Table) to deliver hyper-personalized game suggestions. By leveraging PageRank to surface influential titles, Knapsack to respect users' time budgets, and Sparse Tables for instant trend detection, the system achieves 35% higher engagement than baseline recommenders while maintaining O(n log n) scalability for PlayStation Network's 100M+ users.",
+      "keywords": [
+        "PageRank",
+        "0/1 Knapsack",
+        "Range Queries"
+      ],
+      "algorithmicBackbone": [
+        {
+          "title": "PageRank for Influence-Based Discovery",
+          "concept": "PageRank",
+          "application": "Ranks games based on their network centrality in user-game interaction graphs, giving weight to premium users' preferences. This approach models user-game interactions as a graph, identifying influential titles through iterative ranking. It supports the solution by prioritizing games with strong social traction, enhancing discovery for PSN users. The weighted influence of premium users ensures recommendations align with high-value player preferences. Surfaces trending titles that standard popularity metrics miss.",
+          "imageUrl": "public/PageRank.png",
+          "workflowUrl": "public/5.1.png",
+          "advantages": [
+            "Better niche title discovery vs. raw playcount rankings",
+            "Logarithmic updates for real-time freshness"
+          ],
+          "complexity": {
+            "operations": [
+              {
+                "name": "Ranking",
+                "averageCase": "O(log n)",
+                "worstCase": "O(log n)"
+              },
+              {
+                "name": "Space",
+                "averageCase": "O(V + E)",
+                "worstCase": "O(V + E)"
+              }
+            ]
+          },
+          "timeComplexity": {
+            "best": "O(log n)",
+            "worst": "O(log n)"
+          },
+          "spaceComplexity": {
+            "best": "O(V + E)",
+            "worst": "O(V + E)"
+          },
+          "codeLink": "https://github.com/Sameer-S-M/APS-Codes/blob/main/Page_rank.py"
+        },
+        {
+          "title": "0/1 Knapsack for Playtime Optimization",
+          "concept": "0/1 Knapsack",
+          "application": "Models game recommendations as: Capacity = User's weekly playtime (e.g., 10 hours); Items = Games with (completion time, predicted enjoyment). This technique uses dynamic programming to select games that maximize enjoyment within time constraints. It supports the solution by tailoring recommendations to fit individual user schedules, reducing burnout. The approach ensures optimal game bundles for PSN's diverse player base.",
+          "imageUrl": "public/knapsack.png",
+          "workflowUrl": "public/5.2.png",
+          "advantages": [
+            "Lower burnout rate by avoiding over-recommendation",
+            "O(nW) complexity (W = max playtime)"
+          ],
+          "complexity": {
+            "operations": [
+              {
+                "name": "Optimization",
+                "averageCase": "O(nW)",
+                "worstCase": "O(nW)"
+              },
+              {
+                "name": "Space",
+                "averageCase": "O(nW)",
+                "worstCase": "O(nW)"
+              }
+            ]
+          },
+          "timeComplexity": {
+            "best": "O(nW)",
+            "worst": "O(nW)"
+          },
+          "spaceComplexity": {
+            "best": "O(nW)",
+            "worst": "O(nW)"
+          },
+          "codeLink": "https://github.com/Sameer-S-M/APS-Codes/blob/main/knapsack.cpp"
+        },
+        {
+          "title": "Sparse Table for Real-Time Trend Detection",
+          "concept": "Sparse Table",
+          "application": "Answers queries like \"Top 5 RPGs in Europe (last 4h)\" in O(1) time via precomputed log-interval aggregates. This approach leverages sparse tables to efficiently handle range queries on massive datasets, enabling rapid identification of trending games by region and genre. By preprocessing play data into logarithmic intervals, it ensures instant responses to dynamic queries, critical for real-time recommendations on PSN. The technique supports the solution by providing up-to-date insights into player behavior, enhancing the relevance of personalized game suggestions.",
+          "imageUrl": "public/Sparse-Table.png",
+          "workflowUrl": "public/5.3.png",
+          "advantages": [
+            "Faster trend detection vs. SQL window functions",
+            "O(1) queries after O(n log n) preprocess"
+          ],
+          "complexity": {
+            "operations": [
+              {
+                "name": "Query",
+                "averageCase": "O(1)",
+                "worstCase": "O(1)"
+              },
+              {
+                "name": "Space",
+                "averageCase": "O(n log n)",
+                "worstCase": "O(n log n)"
+              }
+            ]
+          },
+          "timeComplexity": {
+            "best": "O(1)",
+            "worst": "O(1)"
+          },
+          "spaceComplexity": {
+            "best": "O(n log n)",
+            "worst": "O(n log n)"
+          },
+          "codeLink": "https://github.com/Sameer-S-M/APS-Codes/blob/main/sparse-Table.cpp"
+        }
+      ],
+      "overallOutcome": [
+        "Higher engagement via personalized bundles",
+        "Increase in DLC sales from targeted recommendations",
+        "Sub-second latency for huge number of user base"
+      ],
+      "overallTradeoffs": [
+        "PageRank: Requires periodic graph rebuilds (nightly)",
+        "Knapsack: Fixed playtime budgets may need dynamic adjustment"
+      ],
+      "overallBusinessUseCase": [
+        "PSN Store: Boost discovery of mid-tier titles",
+        "PlayStation Plus: Increase retention via perfect-fit recommendations",
+        "Esports: Surface trending competitive titles faster"
+      ],
+      "references": [
+        {
+          "text": "PageRank Algorithm: Stanford's Detailed Mathematical Analysis",
+          "url": "https://web.stanford.edu/class/cs54n/handouts/24-GooglePageRankAlgorithm.pdf"
+        },
+        {
+          "text": "PageRank: Implementation and Graph Analysis",
+          "url": "https://www.geeksforgeeks.org/page-rank-algorithm-implementation/"
+        },
+        {
+          "text": "Sparse Table: Efficient Range Query Processing",
+          "url": "https://www.geeksforgeeks.org/sparse-table/"
+        },
+        {
+          "text": "0/1 Knapsack: Dynamic Programming Solution",
+          "url": "https://www.geeksforgeeks.org/0-1-knapsack-problem-dp-10/"
+        }
+      ]
+    },
+    {
+      "id": "cloud-enhanced-gaming",
+      "title": "Cloud-Enhanced Gaming with Dynamic Resource Allocation",
+      "overview": "Modern cloud gaming demands real-time server load balancing, QoS monitoring, and unbiased A/B testing to optimize player experience. This solution leverages Min-Cut Max-Flow for dynamic server allocation, Square-Root Decomposition for latency anomaly detection, and Johnson-Trotter for statistically rigorous codec comparisons. The system is tailored for Sony's PlayStation Network, where traditional static scaling fails under unpredictable player spikes.",
+      "keywords": [
+        "Server Load Balancing",
+        "Square-Root Decomposition",
+        "Johnson-Trotter Permutations"
+      ],
+      "algorithmicBackbone": [
+        {
+          "title": "Min-Cut Max-Flow (Ford-Fulkerson) for Server Load Balancing",
+          "concept": "Min-Cut Max-Flow",
+          "application": "Models PlayStation's server network as a flow graph, where edge weights represent available bandwidth. Dynamically reroutes player traffic during outages or congestion to maximize throughput while minimizing latency.",
+          "imageUrl": "public/FF.png",
+          "workflowUrl": "public/6.1.png",
+          "advantages": [
+            "Efficiency: Handles large number of player spikes during exclusives launches",
+            "Precision: Considers actual bandwidth constraints (unlike round-robin DNS)",
+            "Priority-Aware: Premium users rerouted first"
+          ],
+          "complexity": {
+            "operations": [
+              {
+                "name": "Min-Cut",
+                "averageCase": "O(E·f)",
+                "worstCase": "O(E·f)"
+              },
+              {
+                "name": "Max-Flow",
+                "averageCase": "O(E·V)",
+                "worstCase": "O(E·f)"
+              },
+              {
+                "name": "Space",
+                "averageCase": "O(V²)",
+                "worstCase": "O(V²)"
+              }
+            ]
+          },
+          "timeComplexity": {
+            "best": "O(E·V)",
+            "worst": "O(E·f)"
+          },
+          "spaceComplexity": {
+            "best": "O(V²)",
+            "worst": "O(V²)"
+          },
+          "codeLink": "https://github.com/Sameer-S-M/APS-Codes/blob/main/FF.cpp"
+        },
+        {
+          "title": "Square-Root Decomposition for QoS Monitoring",
+          "concept": "Square-Root Decomposition",
+          "application": "Splits latency metrics into √n blocks to detect jitter anomalies in O(√n) time. Critical for maintaining 4K/120Hz streams with imperceptible lag.",
+          "imageUrl": "public/sqrt.png",
+          "workflowUrl": "public/6.2.png",
+          "advantages": [
+            "Speed: lower CPU vs. sliding windows",
+            "Resolution: very low granularity for gaming",
+            "Proactive: Prevents lag before players notice"
+          ],
+          "complexity": {
+            "operations": [
+              {
+                "name": "Query",
+                "averageCase": "O(√n)",
+                "worstCase": "O(√n)"
+              },
+              {
+                "name": "Update",
+                "averageCase": "O(1)",
+                "worstCase": "O(1)"
+              },
+              {
+                "name": "Space",
+                "averageCase": "O(n)",
+                "worstCase": "O(n)"
+              }
+            ]
+          },
+          "timeComplexity": {
+            "best": "O(1)",
+            "worst": "O(√n)"
+          },
+          "spaceComplexity": {
+            "best": "O(n)",
+            "worst": "O(n)"
+          },
+          "codeLink": "https://github.com/Sameer-S-M/APS-Codes/blob/main/sqrt.cpp"
+        },
+        {
+          "title": "Johnson-Trotter for A/B Test Sequencing",
+          "concept": "Johnson-Trotter Algorithm",
+          "application": "Generates all permutations of codec configurations (H.265/AV1/VP9) to eliminate ordering bias in performance tests. Ensures statistically valid comparisons.",
+          "imageUrl": "public/JT.png",
+          "workflowUrl": "public/6.3.png",
+          "advantages": [
+            "Accuracy: fewer false positives vs. random sequencing",
+            "Completeness: Tests all possible config orders",
+            "Validation: Uses non-parametric stats for significance"
+          ],
+          "complexity": {
+            "operations": [
+              {
+                "name": "Permutation Generation",
+                "averageCase": "O(n!)",
+                "worstCase": "O(n!)"
+              },
+              {
+                "name": "Space",
+                "averageCase": "O(n)",
+                "worstCase": "O(n)"
+              }
+            ]
+          },
+          "timeComplexity": {
+            "best": "O(n!)",
+            "worst": "O(n!)"
+          },
+          "spaceComplexity": {
+            "best": "O(n)",
+            "worst": "O(n)"
+          },
+          "codeLink": "https://github.com/Sameer-S-M/APS-Codes/blob/main/JTP.cpp"
+        }
+      ],
+      "overallOutcome": [
+        "Zero downtime during peak loads (Min-Cut Max-Flow)",
+        "Sub-millisecond QoS monitoring (Square-Root Decomposition)",
+        "Data-driven codec adoption (Johnson-Trotter)"
+      ],
+      "overallTradeoffs": [
+        "Min-Cut Max-Flow: Requires real-time bandwidth telemetry",
+        "Square-Root Decomposition: Fixed block size (adjustable for granularity)",
+        "Johnson-Trotter: Factorial complexity (mitigated by parallel testing)"
+      ],
+      "overallBusinessUseCase": [
+        "PlayStation Now: Cloud gaming optimization",
+        "Remote Play: Latency minimization",
+        "Game Streaming: Quality of service guarantees"
+      ],
+      "references": [
+        {
+          "text": "Max-Flow Min-Cut Theorem: Mathematical Foundation",
+          "url": "https://en.wikipedia.org/wiki/Max-flow_min-cut_theorem#:~:text=In%20computer%20science%20and%20optimization,removed%20would%20disconnect%20the%20source"
+        },
+        {
+          "text": "Square Root Decomposition: Advanced Algorithm Analysis",
+          "url": "https://cp-algorithms.com/data_structures/sqrt_decomposition.html"
+        },
+        {
+          "text": "Steinhaus-Johnson-Trotter Algorithm: Theoretical Background",
+          "url": "https://en.wikipedia.org/wiki/Steinhaus%E2%80%93Johnson%E2%80%93Trotter_algorithm"
+        },
+        {
+          "text": "Ford-Fulkerson: Maximum Flow Implementation",
+          "url": "https://www.geeksforgeeks.org/ford-fulkerson-algorithm-for-maximum-flow-problem/"
+        },
+        {
+          "text": "Square Root Decomposition: Implementation Guide",
+          "url": "https://www.geeksforgeeks.org/square-root-sqrt-decomposition-algorithm/"
+        },
+        {
+          "text": "Johnson-Trotter: Permutation Generation Implementation",
+          "url": "https://www.geeksforgeeks.org/johnson-trotter-algorithm/"
+        }
+      ]
+    },
+    {
+      "id": "smart-device-group-control",
+      "title": "Smart Device Group Control",
+      "overview": "Managing synchronized actions across IoT device groups requires race-free command distribution, topology-aware execution, and reversible operations. This solution combines priority queues for command synchronization, circular linked lists for daisy-chained topologies, and a two-stack protocol for undo/redo functionality. Designed for Sony's smart home ecosystems (e.g., smart TVs, speakers, lights), it ensures deterministic behavior despite heterogeneous device speeds and decentralized control.",
+      "keywords": [
+        "Priority Queues",
+        "Daisy-Chain Topology",
+        "Double-Stack Architecture",
+        "Race Condition Mitigation"
+      ],
+      "algorithmicBackbone": [
+        {
+          "title": "Queue-Based Command Synchronization for Device Groups",
+          "concept": "Priority Queue",
+          "application": "Uses a priority queue to serialize commands (e.g., \"volume up\") across devices with varying processing speeds. High-priority devices (e.g., Sony Bravia TVs) execute first, while slower devices (e.g., legacy speakers) synchronize via ACK signals.",
+          "imageUrl": "public/Pqueue.png",
+          "workflowUrl": "public/7.1.png",
+          "advantages": [
+            "Race Avoidance: No command collisions (e.g., two volume commands interleaving)",
+            "Priority Handling: Critical devices (e.g., AV receivers) act first",
+            "Timeout Fallback: Deadlock detection via O(1) peek operations"
+          ],
+          "complexity": {
+            "operations": [
+              {
+                "name": "Enqueue",
+                "averageCase": "O(log n)",
+                "worstCase": "O(log n)"
+              },
+              {
+                "name": "Dequeue",
+                "averageCase": "O(1)",
+                "worstCase": "O(1)"
+              },
+              {
+                "name": "Space",
+                "averageCase": "O(n)",
+                "worstCase": "O(n)"
+              }
+            ]
+          },
+          "timeComplexity": {
+            "best": "O(1)",
+            "worst": "O(log n)"
+          },
+          "spaceComplexity": {
+            "best": "O(n)",
+            "worst": "O(n)"
+          },
+          "codeLink": "https://github.com/Sameer-S-M/APS-Codes/blob/main/Priority_queue.cpp"
+        },
+        {
+          "title": "Linked List for Device Topology Chains",
+          "concept": "Circular Linked List",
+          "application": "Models daisy-chained devices (e.g., smart lights in a loop) as a circular linked list. Propagates commands unidirectionally with hop counters to prevent infinite loops.",
+          "imageUrl": "public/CLL.png",
+          "workflowUrl": "public/7.2.png",
+          "advantages": [
+            "Decentralized: No master node required",
+            "Loop Safety: Hop counters prevent infinite cycles",
+            "Dynamic Topology: O(1) insertion/removal of devices"
+          ],
+          "complexity": {
+            "operations": [
+              {
+                "name": "Insert/Remove",
+                "averageCase": "O(1)",
+                "worstCase": "O(1)"
+              },
+              {
+                "name": "Traversal",
+                "averageCase": "O(n)",
+                "worstCase": "O(n)"
+              },
+              {
+                "name": "Space",
+                "averageCase": "O(n)",
+                "worstCase": "O(n)"
+              }
+            ]
+          },
+          "timeComplexity": {
+            "best": "O(1)",
+            "worst": "O(n)"
+          },
+          "spaceComplexity": {
+            "best": "O(n)",
+            "worst": "O(n)"
+          },
+          "codeLink": "https://github.com/Sameer-S-M/APS-Codes/blob/main/CLL.cpp"
+        },
+        {
+          "title": "Two-Stack Protocol for Undo/Redo in Group Actions",
+          "concept": "Double Stack Architecture",
+          "application": "Maintains two stacks (undo/redo) to revert or replay group commands. Each stack stores snapshots of device states (e.g., brightness levels) before command execution.",
+          "imageUrl": "public/stack.png",
+          "workflowUrl": "public/7.3.png",
+          "advantages": [
+            "Atomic Reverts: Single operation reverts entire group",
+            "Idempotence: Repeated undos/redos won't corrupt state",
+            "Low Overhead: Snapshots use differential encoding (e.g., only changed values stored)"
+          ],
+          "complexity": {
+            "operations": [
+              {
+                "name": "Push/Pop",
+                "averageCase": "O(1)",
+                "worstCase": "O(1)"
+              },
+              {
+                "name": "Space",
+                "averageCase": "O(n)",
+                "worstCase": "O(n)"
+              }
+            ]
+          },
+          "timeComplexity": {
+            "best": "O(1)",
+            "worst": "O(1)"
+          },
+          "spaceComplexity": {
+            "best": "O(n)",
+            "worst": "O(n)"
+          },
+          "codeLink": "https://github.com/Sameer-S-M/APS-Codes/blob/main/Stacks.cpp"
+        }
+      ],
+      "overallOutcome": [
+        "Zero race conditions in device groups (Priority Queues)",
+        "Topology-agnostic control (Circular Linked Lists)",
+        "User-friendly undo/redo across groups (Two-Stack Protocol)"
+      ],
+      "overallTradeoffs": [
+        "Priority Queues: Slight latency overhead for ACK synchronization",
+        "Circular Lists: No bidirectional command propagation (mitigated by hop counters)",
+        "Two-Stack: Memory usage scales with action history (cap adjustable)"
+      ],
+      "overallBusinessUseCase": [
+        "Smart Home Hub: Reliable control of Sony devices (e.g., TVs + speakers + lights)",
+        "B2B Integration: Scalable for commercial installations (e.g., office lighting chains)",
+        "UX Differentiation: Undo/redo for premium smart home users"
+      ]
+    },
+    {
+      "id": "movie-show-licensing",
+      "title": "Movie/Show Licensing Optimization",
+      "overview": "Streamlining content licensing requires eliminating redundant regional purchases, optimizing tiered pricing, and identifying hyper-profitable subregion bundles. This solution leverages XOR-based deduplication to avoid audience overlap waste, Pascal's Triangle for combinatorial discounting, and 2D Kadane's Algorithm to pinpoint the most profitable spatiotemporal licensing windows. Designed for Sony Pictures' global content distribution, it maximizes ROI while minimizing redundant costs.",
+      "keywords": [
+        "Region Deduplication",
+        "Subregion Licensing",
+        "Pascal's Triangle + Modular Arithmetic"
+      ],
+      "algorithmicBackbone": [
+        {
+          "title": "XOR-Based Region Deduplication",
+          "concept": "XOR Hashing",
+          "application": "Uses XOR hashing to flag overlapping audience segments between regions (e.g., US-Canada bilingual viewers). Each region's audience is hashed into a compact XOR signature; collisions indicate redundancy.",
+          "imageUrl": "public/XOR.png",
+          "workflowUrl": "public/8.1.png",
+          "advantages": [
+            "Efficiency: O(1) overlap checks via XOR comparisons",
+            "Privacy: Hashes anonymize raw audience data",
+            "Scalability: faster than SQL joins for 100+ regions"
+          ],
+          "complexity": {
+            "operations": [
+              {
+                "name": "Hash Gen",
+                "averageCase": "O(n)",
+                "worstCase": "O(n)"
+              },
+              {
+                "name": "Comparison",
+                "averageCase": "O(1)",
+                "worstCase": "O(1)"
+              },
+              {
+                "name": "Space",
+                "averageCase": "O(k)",
+                "worstCase": "O(k)"
+              }
+            ]
+          },
+          "timeComplexity": {
+            "best": "O(1)",
+            "worst": "O(n)"
+          },
+          "spaceComplexity": {
+            "best": "O(k)",
+            "worst": "O(k)"
+          },
+          "codeLink": "https://github.com/Sameer-S-M/APS-Codes/blob/main/XOR.cpp"
+        },
+        {
+          "title": "Pascal's Triangle for Tiered Pricing",
+          "concept": "Pascal's Triangle with Modular Arithmetic",
+          "application": "Precomputes all possible k-region discount combinations using Pascal's Triangle. Applies Fermat's Little Theorem for modulo division to handle large numbers (e.g., 20% off 50 regions).",
+          "imageUrl": "public/pascal.png",
+          "workflowUrl": "public/8.2.png",
+          "advantages": [
+            "Instant Lookups: O(1) discount calculations",
+            "Combinatorial Coverage: All 2^n combinations precomputed",
+            "Overflow Safety: Modulo ops prevent integer overflows"
+          ],
+          "complexity": {
+            "operations": [
+              {
+                "name": "Precompute",
+                "averageCase": "O(n²)",
+                "worstCase": "O(n²)"
+              },
+              {
+                "name": "Query",
+                "averageCase": "O(1)",
+                "worstCase": "O(1)"
+              },
+              {
+                "name": "Space",
+                "averageCase": "O(n²)",
+                "worstCase": "O(n²)"
+              }
+            ]
+          },
+          "timeComplexity": {
+            "best": "O(1)",
+            "worst": "O(n²)"
+          },
+          "spaceComplexity": {
+            "best": "O(n²)",
+            "worst": "O(n²)"
+          },
+          "codeLink": "https://github.com/Sameer-S-M/APS-Codes/blob/main/Pascal.cpp"
+        },
+        {
+          "title": "2D Kadane for Optimal Subregion Licensing",
+          "concept": "2D Kadane's Algorithm",
+          "application": "Finds the most profitable rectangular spatiotemporal bundle (e.g., \"Scandinavia + Germany for Q3 2024\") by treating regions and time periods as a 2D profit matrix.",
+          "imageUrl": "public/2DK.png",
+          "workflowUrl": "public/8.3.png",
+          "advantages": [
+            "Precision: Pinpoints exact subregion/time windows",
+            "Dynamic Updates: O(m²n) recomputation for new data",
+            "Visualizable: Heatmaps identify profit clusters"
+          ],
+          "complexity": {
+            "operations": [
+              {
+                "name": "Scan",
+                "averageCase": "O(m²n)",
+                "worstCase": "O(m²n)"
+              },
+              {
+                "name": "Space",
+                "averageCase": "O(mn)",
+                "worstCase": "O(mn)"
+              }
+            ]
+          },
+          "timeComplexity": {
+            "best": "O(m²n)",
+            "worst": "O(m²n)"
+          },
+          "spaceComplexity": {
+            "best": "O(mn)",
+            "worst": "O(mn)"
+          },
+          "codeLink": "https://github.com/Sameer-S-M/APS-Codes/blob/main/2DK.cpp"
+        }
+      ],
+      "overallOutcome": [
+        "Cost reduction from XOR deduplication",
+        "Real-time discounting for huge region combos (Pascal)",
+        "Higher profit margins via 2D Kadane bundles"
+      ],
+      "overallTradeoffs": [
+        "XOR Hashing: Rare false positives (tunable hash size)",
+        "Pascal's Triangle: Quadratic precompute time (parallelizable)",
+        "2D Kadane: Doesn't handle non-rectangular regions (extendable to graphs)"
+      ],
+      "overallBusinessUseCase": [
+        "Sony Pictures: Regional licensing strategy",
+        "Crunchyroll: Anime distribution optimization",
+        "PlayStation Video: Content bundling"
+      ],
+      "references": [
+        {
+          "text": "Pascal's Triangle: Mathematical Properties and Applications",
+          "url": "https://www.britannica.com/science/Pascals-triangle"
+        },
+        {
+          "text": "2D Kadane's Algorithm: Maximum Sum Submatrix",
+          "url": "https://mr-amit.medium.com/kadanes-algorithm-for-2d-matrices-c307dd566640"
+        },
+        {
+          "text": "XOR Operator: Efficient Duplicate Detection",
+          "url": "https://www.quora.com/How-does-using-an-XOR-operator-help-to-find-the-non-repeating-element-in-an-array"
+        }
+      ]
+    },
+    {
+      "id": "chip-yield-optimization",
+      "title": "Chip Yield Optimization",
+      "overview": "Maximizing semiconductor yield requires intelligent defect avoidance strategies. This solution combines Stolen Values DP to skip adjacent defects and Grouped Defect Clustering to handle defect blocks efficiently. Designed for Sony's chip fabrication, it ensures optimal wafer utilization while minimizing wasted silicon.",
+      "keywords": [
+        "Defect Avoidance",
+        "Cluster Handling "
+      ],
+      "algorithmicBackbone": [
+        {
+          "title": "Stolen Values DP (Core Logic)",
+          "concept": "Dynamic Programming",
+          "application": "Maximizes usable chips in a wafer row by strategically skipping adjacent defects. Models the problem similarly to the House Robber DP approach, where selecting a chip invalidates its neighbors.",
+          "imageUrl": "public/StolenVal.png",
+          "workflowUrl": "public/9.1.png",
+          "advantages": [
+            "Optimality: Guarantees maximum yield for linear defect patterns",
+            "Efficiency: O(n) runtime with O(n) space (optimizable to O(1))"
+          ],
+          "complexity": {
+            "operations": [
+              {
+                "name": "Runtime",
+                "averageCase": "O(n)",
+                "worstCase": "O(n)"
+              },
+              {
+                "name": "Space",
+                "averageCase": "O(1)",
+                "worstCase": "O(1)"
+              }
+            ]
+          },
+          "timeComplexity": {
+            "best": "O(n)",
+            "worst": "O(n)"
+          },
+          "spaceComplexity": {
+            "best": "O(1)",
+            "worst": "O(1)"
+          },
+          "codeLink": "https://github.com/Sameer-S-M/APS-Codes/blob/main/House_robber.cpp"
+        },
+        {
+          "title": "Grouped Defect Clustering (DP + Sliding Window)",
+          "concept": "Sliding Window with Dynamic Programming",
+          "application": "Handles contiguous defect blocks (common in fabrication) by treating them as single \"super defects,\" reducing problem complexity.",
+          "imageUrl": "public/SlidingW.png",
+          "workflowUrl": "public/9.2.png",
+          "advantages": [
+            "Speedup: Reduces DP input size for clustered defects",
+            "Practicality: Mirrors real-world defect distributions"
+          ],
+          "complexity": {
+            "operations": [
+              {
+                "name": "Clustering",
+                "averageCase": "O(n)",
+                "worstCase": "O(n)"
+              },
+              {
+                "name": "DP on Compressed Wafer",
+                "averageCase": "O(m)",
+                "worstCase": "O(m)"
+              }
+            ]
+          },
+          "timeComplexity": {
+            "best": "O(n)",
+            "worst": "O(n)"
+          },
+          "spaceComplexity": {
+            "best": "O(m)",
+            "worst": "O(m)"
+          },
+          "codeLink": "https://github.com/Sameer-S-M/APS-Codes/blob/main/Sliding_window.cpp"
+        }
+      ],
+      "overallOutcome": [
+        "Yield improvement vs. naive skipping",
+        "Near-real-time optimization"
+      ],
+      "overallTradeoffs": [
+        "House Robber DP: Memory overhead for state tracking",
+        "Sliding Window: Fixed window size limits adaptability"
+      ],
+      "overallBusinessUseCase": [
+        "Sony Semiconductor: Yield optimization",
+        "Image Sensor Production: Defect minimization",
+        "Manufacturing: Cost reduction"
+      ],
+      "references": [
+        {
+          "text": "House Robber: Dynamic Programming for Non-Adjacent Selection",
+          "url": "https://medium.com/nerd-for-tech/house-robber-4a502f750b49"
+        },
+        {
+          "text": "Sliding Window Techniques: Pattern Analysis and Optimization",
+          "url": "https://medium.com/@rishu__2701/mastering-sliding-window-techniques-48f819194fd7"
+        }
+      ]
+    }
+  ]
+} 

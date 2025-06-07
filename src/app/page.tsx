@@ -5,7 +5,7 @@ export default function Home() {
     <div>
       {/* The main content is handled by the Domain component */}
       {/* You can add a placeholder or other shared layout elements here if needed */}
-      <p>This is the root page. Main content loaded below (if using Domain component directly).</p>
+      <p className="text-justify">This is the root page. Main content loaded below (if using Domain component directly).</p>
       {/* Example: <Domain /> if you want to render it directly here */}
     </div>
   );

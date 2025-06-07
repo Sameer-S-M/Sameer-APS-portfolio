@@ -1,269 +1,436 @@
 'use client';
 
-import { useState } from 'react'; // Removed useEffect as it's no longer needed for scrolling
+import { useState, useEffect, useRef } from 'react';
+import { AppliedSolutionConcept, AppliedSolutionConceptResponse } from '../types/domain';
+import solutionConceptsData from '../data/appliedSolutionConcepts.json';
 
+const AppliedSolutionConcepts = () => {
+  const [expandedConceptId, setExpandedConceptId] = useState<string | null>(null);
+  
+  // Safely parse and type the data
+  const concepts = (solutionConceptsData as AppliedSolutionConceptResponse)?.appliedSolutionConcepts || [];
 
-// Helper function to parse text and add links to citations
-const renderTextWithCitations = (text: string, citations: { name: string; url: string }[]) => {
-  // This is a basic implementation. For more complex cases, a more robust parser might be needed.
-  let renderedText = text;
-
-  citations.forEach(citation => {
-    // Use a regex to find citation names in parentheses, allowing for multiple mentions and commas
-    const regex = new RegExp(`\\((${citation.name}(?:, ${citation.name})*)\\)`, 'g');
-
-    renderedText = renderedText.replace(regex, (match, p1) => {
-      // p1 will be the content inside the parentheses, e.g., "Google Patents, Google Patents"
-      const names = p1.split(', ');
-      const links = names.map(name => {
-         const foundCitation = citations.find(c => c.name === name);
-         if (foundCitation && foundCitation.url) {
-            return `<a href="${foundCitation.url}" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">${name}</a>`;
-         }
-         return name; // Fallback if URL is not found
-      }).join(', '); // Rejoin with commas
-
-      return `(${links})`; // Put the links back in parentheses
-    });
-  });
-
-   // Return as dangerouslySetInnerHTML to render the HTML links
-   return <span dangerouslySetInnerHTML={{ __html: renderedText }} />;
-};
-
-
-// Define the data structure and the data within the component for now
-// In a larger application, this data would likely come from a separate file or API
-const domainData = [
-  {
-    id: 'matchmaking-optimization',
-    title: 'Dynamic Multiplayer Matchmaking Optimization',
-    imageUrl: 'https://placehold.co/800x500.png', // Slightly larger placeholder
-    briefDescription: 'Online platforms match players based on variables like latency, relative skill level, team composition, and wait time to optimize fairness and retention.',
-    currentAlgorithmSummary: 'Current approaches include Clustering (k-means, hierarchical), Greedy Matching, and Machine Learning Models (Neural networks or reinforcement-learning agents).',
-    detailedContent: {
-      contextAndMotivation: 'Online platforms (e.g., PSN’s Destiny 2, Helldivers 2) match players based on variables like latency, relative skill level, team composition, and wait time to optimize fairness and retention (Google Patents, Google Patents). ',
-      currentApproachesDetailed: [
-        'Clustering (k-means, hierarchical): Groups players into “houses” by past performance metrics to produce balanced rosters (ResearchGate).',
-        'Greedy Matching: Iterates through the queue, pairing each newcomer with the lowest-latency or best-score partner immediately (Reddit).',
-        'Machine Learning Models: Neural networks or reinforcement-learning agents predict match quality from player behavior and preferences (Medium).',
-      ],
-      enhancements: [
-        {
-          title: '1. KD-Tree Nearest-Neighbor Search',
-          imageUrl: 'https://placehold.co/150x100.png', // Placeholder for enhancement image
-          problemSolving: 'Organizes each player’s (skill, latency) point in a k-d tree to answer “who lies closest in this space?” in logarithmic time (Wikipedia).',
-          advantagesAndImpact: [
-            'Build: O(n log n) for n players (Wikipedia).',
-            'Insert/Delete/Query (avg.): O(log n) each, reducing per-query cost from O(n) → O(log n).',
-            'Outcome: Faster queue processing and reduced wait times.',
-          ],
-          tradeOff: 'Performance degrades when dimensionality (number of match criteria) grows high (curse of dimensionality) (Wikipedia).',
-          spaceComplexity: 'O(n log n)', // Added for table
-          timeComplexity: 'O(log n) (avg.)', // Added for table
-          codeLink: '#' // Placeholder for code link
-        },
-        {
-          title: '2. Persistent Segment Tree for Historical Analytics',
-          imageUrl: 'https://placehold.co/150x100.png', // Placeholder for enhancement image
-          problemSolving: 'Keeps every version of match-quality metrics (e.g., wait times, churn rates) in a versioned segment tree to support instant queries and rollbacks (GeeksforGeeks).',
-          advantagesAndImpact: [
-            'Point Update / Range Query: O(log n) per operation (GeeksforGeeks).',
-            'Version Storage: O(n log n) total across all updates, enabling trend analysis without rebuilding (USACO Guide).',
-            'Outcome: Data-driven parameter tuning over time → continually fairer, more personalized matches.',
-          ],
-          tradeOff: 'Memory overhead grows as O(n log n) to preserve history.',
-           spaceComplexity: 'O(n log n)', // Added for table
-          timeComplexity: 'O(log n)', // Added for table
-          codeLink: '#' // Placeholder for code link
-        },
-      ],
-      // Removed summaryOfBenefits section
-       citations: [
-        { name: 'Google Patents', url: 'https://www.google.com/search?q=https://patents.google.com/patent/US9604139B2/en' },
-        { name: 'ResearchGate', url: 'https://www.google.com/search?q=https://www.researchgate.net/publication/340050865_A_Survey_on_Player_Matchmaking_Algorithm_Using_K-Means_Clustering' },
-        { name: 'Reddit', url: 'https://www.google.com/search?q=https://www.reddit.com/r/gamedev/comments/1q3l5f/matchmaking_greedy_vs_optimal_matching/' },
-        { name: 'Medium', url: 'https://www.google.com/search?q=https://medium.com/%40joshuamcginnis/the-future_of_matchmaking-in-video-games-ai-and_player_engagement-6b1e2a3b04a8' },
-        { name: 'Wikipedia', url: 'https://en.wikipedia.org/wiki/K-d_tree' }, // Using the primary K-d tree link for Wikipedia mentions
-        { name: 'Curse of dimensionality', url: 'https://en.wikipedia.org/wiki/Curse_of_dimensionality' }, // Specific link for this term
-        { name: 'GeeksforGeeks', url: 'https://www.geeksforgeeks.org/persistent-segment-tree-set-1-introduction/' },
-        { name: 'USACO Guide', url: 'https://www.google.com/search?q=https://usaco.guide/plat/persistent-segment-tree/' },
-      ]
-    }
-  }
-];
-
-const Domain = () => {
-  const [expandedDomainId, setExpandedDomainId] = useState<string | null>(null);
-
-  const handleToggleExpand = (domainId: string, e?: React.MouseEvent<HTMLButtonElement>) => { // Added optional event parameter
-     if (e) {
-        e.preventDefault(); // Prevent default button behavior
-     }
-    setExpandedDomainId(expandedDomainId === domainId ? null : domainId);
+  // Animation styles
+  const floatKeyframes = {
+    '0%': {
+      transform: 'translateY(0px)',
+    },
+    '100%': {
+      transform: 'translateY(-10px)',
+    },
   };
 
+  const getFloatAnimation = (index: number) => ({
+    animation: `float${index} ${3 + index * 0.5}s ease-in-out infinite alternate`,
+  });
 
-  // Prepare citations data for easier lookup in renderTextWithCitations
-  const allCitations = domainData.flatMap(domain => domain.detailedContent.citations);
+  // Scroll to top on page refresh when collapsed
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!expandedConceptId) {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    };
 
+    // Handle initial page load
+    if (!expandedConceptId) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Add event listener for page refresh
+    window.addEventListener('beforeunload', handleScroll);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleScroll);
+    };
+  }, [expandedConceptId]);
+
+  const handleToggleExpand = (conceptId: string, e?: React.MouseEvent<HTMLButtonElement>) => {
+    if (e) {
+      e.preventDefault();
+    }
+    
+    // If we're collapsing (i.e., expandedConceptId matches current conceptId)
+    if (expandedConceptId === conceptId) {
+      setExpandedConceptId(null);
+      // Scroll to the "Applied Solution Concepts" section
+      const solutionSection = document.getElementById('applied-solutions');
+      if (solutionSection) {
+        setTimeout(() => {
+          solutionSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+      }
+    } else {
+      // If we're expanding
+      setExpandedConceptId(conceptId);
+      const element = document.getElementById(conceptId);
+      if (element) {
+        setTimeout(() => {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+      }
+    }
+  };
+
+  // If there are no concepts, show a message
+  if (!concepts || concepts.length === 0) {
+    return (
+      <section id="domain" className="py-16 bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+        <div className="container mx-auto px-6">
+          <h2 className="text-4xl font-extrabold text-center text-gray-800 dark:text-gray-100 mb-12">Applied Solution Concepts for Sony</h2>
+          <p className="text-center text-gray-600 dark:text-gray-400">No applied solution concepts available at the moment.</p>
+        </div>
+      </section>
+    );
+  }
 
   return (
-    <section id="domain" className="py-16 bg-gray-50"> {/* Added background color and adjusted padding */}
-      <div className="container mx-auto px-6"> {/* Adjusted padding */}
-        <h2 className="text-4xl font-extrabold text-center text-gray-800 mb-12">Domains</h2> {/* Enhanced heading style */}
+    <section id="domain" className="py-16 bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+      <div className="container mx-auto px-6">
+        <h2 className="text-4xl font-extrabold text-center text-gray-800 dark:text-gray-100 mb-12">Chosen Domain: SONY</h2>
 
-        {/* Removed the "Back to All Domains" button container */}
-
-        <div className={`grid grid-cols-1 ${expandedDomainId ? 'max-w-5xl mx-auto' : 'md:grid-cols-2 lg:grid-cols-3'} gap-8`}> {/* Adjusted grid and max-width for expanded */}
-          {domainData.map(domain => {
-            const isExpanded = expandedDomainId === domain.id;
-            return (
+        {/* Sony Logos Collage */}
+        <div className="max-w-5xl mx-auto mb-16 relative">
+          {/* Background decorative elements */}
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-50/50 via-transparent to-purple-50/50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-3xl"></div>
+          <div className="absolute inset-0 backdrop-blur-3xl opacity-20"></div>
+          
+          {/* Main collage container */}
+          <div className="relative grid grid-cols-2 md:grid-cols-4 gap-8 p-8">
+            {[1, 2, 3, 4].map((num, index) => (
               <div
-                key={domain.id}
-                className={`border rounded-xl overflow-hidden shadow-lg transition-all duration-300 ease-in-out bg-white flex flex-col ${
-                  isExpanded ? 'col-span-1 md:col-span-2 lg:col-span-3' : 'hover:shadow-xl' // Removed cursor-pointer and onClick from card div in compact state
+                key={num}
+                className={`group relative transform transition-all duration-500 hover:scale-110 hover:z-10 ${
+                  index % 2 === 0 ? 'hover:rotate-6' : 'hover:-rotate-6'
+                } ${
+                  index === 0 ? 'md:-translate-y-4' :
+                  index === 1 ? 'md:translate-y-8' :
+                  index === 2 ? 'md:-translate-y-6' :
+                  'md:translate-y-2'
                 }`}
-                // Removed onClick from the card div in compact state
+                style={getFloatAnimation(index)}
               >
-                 {/* Card Image (Visible in both states) */}
-                <div className={`w-full overflow-hidden ${isExpanded ? 'h-72 md:h-96' : 'h-56'}`}> {/* Container for responsive image height */}
-                   <img
-                      src={domain.imageUrl}
-                      alt={domain.title}
-                      className="w-full h-full object-cover" // Ensure image covers container
+                {/* Card container */}
+                <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-white/90 to-white/40 dark:from-gray-800/90 dark:to-gray-800/40 p-6 shadow-lg backdrop-blur-sm transition-all duration-300 group-hover:shadow-2xl border border-white/20 dark:border-gray-700/20">
+                  {/* Hover overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-blue-400/10 via-purple-400/10 to-pink-400/10 dark:from-blue-400/20 dark:via-purple-400/20 dark:to-pink-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  
+                  {/* Glowing effect */}
+                  <div className="absolute -inset-2 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 opacity-0 group-hover:opacity-20 blur-xl transition-all duration-300"></div>
+                  
+                  {/* Logo image */}
+                  <div className="relative">
+                    <img
+                      src={`public/sony${num}.png`}
+                      alt={`Sony Logo ${num}`}
+                      className="w-full h-auto max-h-28 object-contain filter transition-all duration-300 group-hover:brightness-110 group-hover:contrast-110"
                     />
+                  </div>
                 </div>
+              </div>
+            ))}
+          </div>
+        </div>
 
+        <style>
+          {[0, 1, 2, 3].map((index) => `
+            @keyframes float${index} {
+              0% { transform: translateY(0px); }
+              100% { transform: translateY(-10px); }
+            }
+          `).join('\n')}
+        </style>
 
-                <div className="p-6 flex flex-col justify-between flex-grow">
-                  {/* Card Title (Visible in both states) - Adjusted styling for truncation */}
-                  <h3 className={`text-2xl font-bold text-gray-800 mb-3 ${isExpanded ? '' : 'min-h-[3rem] flex items-center'}`}>{domain.title}</h3> {/* Ensured space for title and centered vertically */}
+        {/* Domain Introduction Cards */}
+        <div className="max-w-6xl mx-auto mb-16">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+            {/* Motivation Card */}
+            <div className="relative bg-gradient-to-br from-blue-50 via-blue-100/70 to-indigo-100/60 dark:from-gray-800/90 dark:via-blue-900/20 dark:to-indigo-900/10 backdrop-blur-lg rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 p-8 border border-blue-200 dark:border-blue-700/20 overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-200/30 via-transparent to-indigo-200/30 dark:from-blue-900/20 dark:via-transparent dark:to-indigo-900/20 pointer-events-none"></div>
+              <div className="relative flex flex-col h-full">
+                <div className="mb-6">
+                  <h3 className="text-2xl font-bold mb-2 bg-clip-text text-transparent bg-gradient-to-r from-blue-800 to-indigo-700 dark:from-blue-400 dark:to-indigo-400">Motivation</h3>
+                  <div className="h-1 w-20 bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 rounded-full mb-4"></div>
+                </div>
+                <p className="text-gray-800 dark:text-gray-300 text-justify leading-relaxed">
+                  I chose Sony as the focus of this portfolio due to its pioneering work in edge-AI hardware, real-time embedded systems, and heterogeneous computing — areas where I blend academic research with implementation. Sony's leadership in imaging sensors (e.g., Starvis 2), gaming (PlayStation), and AI-driven consumer electronics (like Sony AI's robotics) creates unique algorithmic challenges, such as latency-critical inference and power-efficient ML deployment. This portfolio bridges theoretical algorithms with Sony's real-world problems, demonstrating how optimized solutions can enhance innovation in consumer technology and embedded systems.
+                </p>
+              </div>
+            </div>
 
-                  {/* Compact View Content */}
-                  {!isExpanded && (
-                    <>
-                      <p className="text-gray-700 mb-4 flex-grow line-clamp-4">{domain.briefDescription}</p> {/* Added line clamp */}
-                      <p className="text-gray-600 text-sm mb-4">
-                        <span className="font-semibold">Current Approaches:</span> {domain.currentAlgorithmSummary}
-                      </p>
-                      {/* "Show More" button - Reintroduced */}
-                       <button
-                        onClick={() => handleToggleExpand(domain.id)} // Added onClick
-                        className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200 self-end" // Styled button
-                      >
-                        Show More
-                      </button>
-                    </>
-                  )}
+            {/* Objectives Card */}
+            <div className="relative bg-gradient-to-br from-purple-50 via-purple-100/70 to-pink-100/60 dark:from-gray-800/90 dark:via-purple-900/20 dark:to-pink-900/10 backdrop-blur-lg rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 p-8 border border-purple-200 dark:border-purple-700/20 overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-purple-200/30 via-transparent to-pink-200/30 dark:from-purple-900/20 dark:via-transparent dark:to-pink-900/20 pointer-events-none"></div>
+              <div className="relative flex flex-col h-full">
+                <div className="mb-6">
+                  <h3 className="text-2xl font-bold mb-2 bg-clip-text text-transparent bg-gradient-to-r from-purple-800 to-pink-700 dark:from-purple-400 dark:to-pink-400">Objectives</h3>
+                  <div className="h-1 w-20 bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400 rounded-full mb-4"></div>
+                </div>
+                <ul className="space-y-4 text-gray-800 dark:text-gray-300">
+                  <li className="flex items-start space-x-3">
+                    <span className="flex-shrink-0 w-2.5 h-2.5 mt-2 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400 ring-2 ring-purple-100 dark:ring-purple-900"></span>
+                    <span className="text-justify leading-relaxed">Categorize the features and underlying technologies of Sony across various domains such as semiconductors, gaming, entertainment, and finance.</span>
+                  </li>
+                  <li className="flex items-start space-x-3">
+                    <span className="flex-shrink-0 w-2.5 h-2.5 mt-2 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400 ring-2 ring-purple-100 dark:ring-purple-900"></span>
+                    <span className="text-justify leading-relaxed">Identify key algorithms, data structures, or system design techniques currently in use or with potential applications in enhancing Sony's features.</span>
+                  </li>
+                  <li className="flex items-start space-x-3">
+                    <span className="flex-shrink-0 w-2.5 h-2.5 mt-2 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400 ring-2 ring-purple-100 dark:ring-purple-900"></span>
+                    <span className="text-justify leading-relaxed">Create a resource that can be used for educational purposes to understand the intersection of data structures, algorithms, and real-world applications in a large-scale platform like Sony.</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
 
-                  {/* Expanded View Content */}
-                  {isExpanded && (
-                    <div className="mt-4 text-gray-800"> {/* Added text color */}
-                      <h4 className="text-xl font-bold mb-3 border-b pb-2 border-gray-200">Context & Motivation</h4> {/* Styled heading */}
-                      <p className="mb-6">{renderTextWithCitations(domain.detailedContent.contextAndMotivation, allCitations)}</p>
+        {/* Architecture Image Section */}
+        <div className="max-w-6xl mx-auto mb-16">
+          <h2 className="text-3xl font-bold text-center text-gray-800 dark:text-gray-100 mb-8">Architecture</h2>
+          <div className="relative bg-gradient-to-br from-white/90 to-white/40 dark:from-gray-800/90 dark:to-gray-800/40 rounded-3xl p-8 shadow-lg backdrop-blur-sm border border-white/20 dark:border-gray-700/20">
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-100/10 via-purple-100/10 to-pink-100/10 dark:from-blue-900/10 dark:via-purple-900/10 dark:to-pink-900/10 rounded-3xl"></div>
+            <img
+              src="public/Overall.png"
+              alt="Architecture Overview"
+              className="w-full h-auto object-contain rounded-2xl shadow-md"
+            />
+          </div>
+        </div>
 
-                      <h4 className="text-xl font-bold mb-3 border-b pb-2 border-gray-200">Current Approaches</h4> {/* Styled heading */}
-                      <ul className="list-disc list-inside mb-6 space-y-1 text-gray-700"> {/* Added spacing and text color */}
-                        {domain.detailedContent.currentApproachesDetailed.map((item, index) => (
-                          <li key={index}>{renderTextWithCitations(item, allCitations)}</li>
-                        ))}
-                      </ul>
+        <h2 id="applied-solutions" className="text-4xl font-extrabold text-center text-gray-800 dark:text-gray-100 mb-12">Applied Solution Concepts for Sony</h2>
 
-                      <h4 className="text-xl font-bold mb-4 border-b pb-2 border-gray-200">Enhancements</h4> {/* Styled heading */}
-                      <div className="space-y-8 mb-6"> {/* Increased spacing between enhancements */}
-                        {domain.detailedContent.enhancements.map((enhancement, index) => (
-                          <div key={index} className="border rounded-lg p-6 shadow-sm bg-gray-100 flex flex-col md:flex-row gap-6"> {/* Styled enhancement block and added flex layout */}
-                             {/* Enhancement Image Placeholder */}
-                             <div className="w-full md:w-1/4 flex-shrink-0 h-32 bg-gray-300 rounded-md flex items-center justify-center text-gray-600 text-sm overflow-hidden"> {/* Added overflow hidden */}
-                                <img src={enhancement.imageUrl} alt={`${enhancement.title} Image`} className="w-full h-full object-cover rounded-md"/>
-                             </div>
+        {/* Applied Solution Concepts */}
+        <div className="max-w-5xl mx-auto">
+          <div className={`grid grid-cols-1 ${expandedConceptId ? 'max-w-[1200px] mx-auto' : 'md:grid-cols-2'} gap-12 w-full transition-all duration-300 ease-in-out`}>
+            {concepts.map(concept => {
+              const isExpanded = expandedConceptId === concept.id;
+              const isHidden = expandedConceptId && !isExpanded;
 
-                            <div className="flex-grow">
-                                <h5 className="text-lg font-bold mb-3 text-gray-800">{enhancement.title}</h5> {/* Styled enhancement title */}
-                                <p className="text-gray-700 mb-4">
-                                  <span className="font-semibold">Problem Solving:</span> {renderTextWithCitations(enhancement.problemSolving, allCitations)}
-                                </p>
+              return (
+                <div
+                  key={concept.id}
+                  id={concept.id}
+                  className={`
+                    border rounded-xl overflow-hidden shadow-lg bg-white dark:bg-gray-800 dark:border-gray-700 flex flex-col
+                    transition-all duration-300 ease-in-out transform
+                    ${isExpanded ? 'col-span-full scale-100 opacity-100 max-w-[1200px]' : 'max-w-md mx-auto w-full hover:shadow-xl hover:scale-[1.02] hover:-translate-y-1'}
+                    ${isHidden ? 'scale-95 opacity-0 pointer-events-none absolute' : 'scale-100 opacity-100'}
+                  `}
+                >
+                  <div className="p-6 flex flex-col justify-between flex-grow">
+                    {/* Collapsed View */}
+                    {!isExpanded ? (
+                      <div className="flex flex-col h-full">
+                        <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4 text-left">
+                          {concept.title}
+                        </h3>
+                        <div className="mb-6">
+                          <h4 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-2">Overview</h4>
+                          <p className="text-gray-600 dark:text-gray-400 text-justify">{concept.overview}</p>
+                        </div>
+                        <div className="mt-4">
+                          <h4 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-2">Keywords</h4>
+                          <div className="flex flex-wrap gap-2">
+                            {concept.keywords.map((keyword, index) => (
+                              <span
+                                key={index}
+                                className="px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-100 rounded-full text-sm"
+                              >
+                                {keyword}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                        <div className="flex justify-end mt-6">
+                          <button
+                            onClick={() => handleToggleExpand(concept.id)}
+                            className="inline-flex items-center px-4 py-2 text-sm border border-transparent font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-gray-800 transition-all duration-300 ease-in-out hover:scale-105"
+                          >
+                            Show More
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      // Expanded View
+                      <div className="space-y-8">
+                        <div>
+                          <h3 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-4 text-left">
+                            {concept.title}
+                          </h3>
+                          <div className="mb-8">
+                            <h4 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-2">Overview</h4>
+                            <p className="text-gray-600 dark:text-gray-400 text-justify">{concept.overview}</p>
+                          </div>
+                          <div className="mb-4">
+                            <h4 className="text-xl font-bold text-gray-800 dark:text-gray-100">Algorithmic Backbones</h4>
+                          </div>
+                        </div>
 
-                                <p className="text-gray-700 mb-3 font-semibold">Advantages & Impact:</p>
-                                <ul className="list-disc list-inside text-gray-700 mb-4 space-y-1">
-                                  {enhancement.advantagesAndImpact.map((impact, i) => (
-                                    <li key={i}>{renderTextWithCitations(impact, allCitations)}</li>
-                                  ))}
-                                </ul>
+                        {/* Algorithmic Backbones */}
+                        {concept.algorithmicBackbone.map((backbone, index) => (
+                          <div key={index} className="border rounded-lg p-6 bg-gray-50 dark:bg-gray-700/50">
+                            <h4 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4">
+                              {backbone.title}
+                            </h4>
+                            
+                            <div className="mb-6">
+                              <h5 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-2">Application</h5>
+                              <p className="text-gray-600 dark:text-gray-400 text-justify">{backbone.application}</p>
+                            </div>
 
-                                {/* Complexity Table */}
-                                <div className="mb-4 overflow-x-auto"> {/* Added overflow for small screens */}
-                                   <table className="min-w-full divide-y divide-gray-200 border border-gray-200 rounded-md"> {/* Removed overflow-hidden from table */}
-                                      <thead className="bg-gray-200">
-                                         <tr>
-                                            <th className="px-4 py-2 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Complexity Type</th>
-                                            <th className="px-4 py-2 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">Complexity</th>
-                                         </tr>
-                                      </thead>
-                                      <tbody className="bg-white divide-y divide-gray-200">
-                                         <tr>
-                                            <td className="px-4 py-2 whitespace-nowrap text-sm font-medium text-gray-900">Space Complexity</td>
-                                            <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-700">{renderTextWithCitations(enhancement.spaceComplexity, allCitations)}</td>
-                                         </tr>
-                                          <tr>
-                                            <td className="px-4 py-2 whitespace-nowrap text-sm font-medium text-gray-900">Time Complexity</td>
-                                            <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-700">{renderTextWithCitations(enhancement.timeComplexity, allCitations)}</td>
-                                         </tr>
-                                      </tbody>
-                                   </table>
+                            <div className="mb-6">
+                              <h5 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-2">Workflow</h5>
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="bg-white dark:bg-gray-800 p-4 rounded-lg flex items-center justify-center min-h-[300px] overflow-hidden">
+                                  {backbone.workflowUrl ? (
+                                    <img 
+                                      src={backbone.workflowUrl} 
+                                      alt={`${backbone.title} workflow`}
+                                      className="w-full h-auto max-h-[500px] object-contain rounded-lg mx-auto"
+                                    />
+                                  ) : (
+                                    <div className="flex items-center justify-center h-[300px] bg-gray-100 dark:bg-gray-700 rounded-lg">
+                                      <p className="text-gray-500 dark:text-gray-400">Workflow placeholder</p>
+                                    </div>
+                                  )}
                                 </div>
-
-                                <p className="text-gray-700 mb-4"> {/* Added margin bottom */}
-                                  <span className="font-semibold">Trade-Off:</span> {renderTextWithCitations(enhancement.tradeOff, allCitations)}
-                                </p>
-
-                                {/* View Code Button */}
-                                <div className="text-right"> {/* Align button to the right */}
-                                     <a href={enhancement.codeLink} target="_blank" rel="noopener noreferrer" className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors duration-200">
-                                          View Code
-                                     </a>
-                                     {/* Replace '#' in codeLink above with the actual URL to the code */}
+                                <div className="bg-white dark:bg-gray-800 p-4 rounded-lg">
+                                  {backbone.imageUrl ? (
+                                    <img 
+                                      src={backbone.imageUrl} 
+                                      alt={`${backbone.title} visualization`}
+                                      className="w-full h-auto max-h-[500px] object-contain rounded-lg mx-auto"
+                                    />
+                                  ) : (
+                                    <div className="flex items-center justify-center h-[300px] bg-gray-100 dark:bg-gray-700 rounded-lg">
+                                      <p className="text-gray-500 dark:text-gray-400">Image placeholder</p>
+                                    </div>
+                                  )}
                                 </div>
+                              </div>
+                            </div>
 
+                            <div className="mb-6">
+                              <h5 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-2">Advantages</h5>
+                              <ul className="list-none space-y-2">
+                                {backbone.advantages.map((advantage, i) => (
+                                  <li key={i} className="text-gray-600 dark:text-gray-400">• {advantage}</li>
+                                ))}
+                              </ul>
+                            </div>
+
+                            <div>
+                              <h5 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-2">Complexity</h5>
+                              <div className="overflow-x-auto">
+                                <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                                  <thead className="bg-gray-100 dark:bg-gray-600">
+                                    <tr>
+                                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Operation</th>
+                                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Average Case</th>
+                                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Worst Case</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                                    {backbone.complexity.operations.map((op, i) => (
+                                      <tr key={i}>
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">{op.name}</td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{op.averageCase}</td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{op.worstCase}</td>
+                                      </tr>
+                                    ))}
+                                  </tbody>
+                                </table>
+                              </div>
+                            </div>
+                            <div className="mt-6 flex justify-end">
+                              <a
+                                href={backbone.codeLink}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center px-4 py-2 text-sm border border-transparent font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-gray-800 transition-all duration-300 ease-in-out hover:scale-105"
+                              >
+                                View Code
+                              </a>
                             </div>
                           </div>
                         ))}
+
+                        <div className="mt-8">
+                          <h4 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4">Overall Outcome</h4>
+                          <ul className="list-none space-y-2">
+                            {concept.overallOutcome.map((outcome, index) => (
+                              <li key={index} className="text-gray-600 dark:text-gray-400">• {outcome}</li>
+                            ))}
+                          </ul>
+                        </div>
+
+                        <div className="mt-6">
+                          {concept.overallTradeoffs && concept.overallTradeoffs.length > 0 && (
+                            <div className="mb-6">
+                              <h4 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4">Overall Tradeoffs</h4>
+                              <ul className="list-none space-y-2">
+                                {concept.overallTradeoffs.map((tradeoff, i) => (
+                                  <li key={i} className="text-gray-600 dark:text-gray-400">• {tradeoff}</li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+
+                          {/* Business Use Cases */}
+                          {concept.overallBusinessUseCase && concept.overallBusinessUseCase.length > 0 && (
+                            <div className="mb-8">
+                              <h4 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4">Business Use Cases</h4>
+                              <ul className="list-none space-y-2">
+                                {concept.overallBusinessUseCase.map((useCase, i) => (
+                                  <li key={i} className="text-gray-600 dark:text-gray-400">• {useCase}</li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+
+                          {/* References */}
+                          {concept.references && concept.references.length > 0 && (
+                            <div className="mb-8">
+                              <h4 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4">References</h4>
+                              <ul className="list-none space-y-3">
+                                {concept.references.map((reference, i) => (
+                                  <li key={i} className="text-gray-600 dark:text-gray-400 flex items-baseline">
+                                    <span className="mr-2">•</span>
+                                    <a 
+                                      href={reference.url}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors duration-200 hover:underline"
+                                    >
+                                      {reference.text}
+                                    </a>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+                        </div>
+
+                        <div className="flex justify-center mt-8">
+                          <button
+                            onClick={() => handleToggleExpand(concept.id)}
+                            className="inline-flex items-center px-6 py-2 text-sm border border-transparent font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-gray-800 transition-all duration-300 ease-in-out hover:scale-105"
+                          >
+                            Show Less
+                          </button>
+                        </div>
                       </div>
-
-                       {/* Removed Summary of Benefits section */}
-
-                       <h4 className="text-xl font-bold mb-3 border-b pb-2 border-gray-200">Citations</h4> {/* Styled heading */}
-                       <ul className="list-disc list-inside text-blue-700 text-sm mb-6 space-y-1"> {/* Changed text color for links */}
-                          {domain.detailedContent.citations.map((citation, index) => (
-                              <li key={index}>
-                                  <a href={citation.url} target="_blank" rel="noopener noreferrer" className="hover:underline">
-                                      {citation.name}
-                                  </a>
-                              </li>
-                          ))}
-                       </ul>
-
-
-                      {/* "Show Less" button */}
-                       <div className="text-center"> {/* Centered the button */}
-                            <button
-                                onClick={(e) => handleToggleExpand(domain.id, e)} // Added event parameter and preventDefault in handler
-                                className="inline-flex items-center px-6 py-2 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200" // Styled button
-                            >
-                                Show Less
-                            </button>
-                       </div>
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
       </div>
     </section>
   );
 };
 
-export default Domain;
+export default AppliedSolutionConcepts;
