@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1200" width="900" height="1200" fill="none">
+  <rect width="900" height="1200" fill="#EAEAEA" rx="3"/>
+  <g opacity=".5">
+    <ellipse cx="450" cy="520" rx="180" ry="220" fill="#FAFAFA" stroke="#C9C9C9" stroke-width="2.5"/>
+    <ellipse cx="450" cy="520" rx="80" ry="100" fill="#fff" stroke="#C9C9C9" stroke-width="2.5"/>
+    <rect x="320" y="700" width="260" height="60" rx="30" fill="#C9C9C9" opacity=".3"/>
+    <rect x="350" y="780" width="200" height="30" rx="15" fill="#C9C9C9" opacity=".2"/>
+    <rect x="390" y="830" width="120" height="20" rx="10" fill="#C9C9C9" opacity=".2"/>
+  </g>
+  <text x="50%" y="1150" text-anchor="middle" fill="#C9C9C9" font-size="48" font-family="Arial, sans-serif">Placeholder</text>
+</svg>
