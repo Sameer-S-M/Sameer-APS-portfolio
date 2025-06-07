@@ -21,7 +21,7 @@ const About = () => {
             <div className="flex-shrink-0 self-center">
               <div className="w-32 h-32 md:w-40 md:h-40 overflow-hidden border-4 border-slate-300 dark:border-slate-700 shadow-lg bg-white rounded-lg">
                 <img
-                  src="public/sameer.jpg"
+                  src="sameer.jpg"
                   alt="Profile"
                   className="w-full h-full object-cover object-[0_35%]"
                 />

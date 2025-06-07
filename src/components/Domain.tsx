@@ -121,7 +121,7 @@ const AppliedSolutionConcepts = () => {
                   {/* Logo image */}
                   <div className="relative">
                     <img
-                      src={`public/sony${num}.png`}
+                      src={` sony${num}.png`}
                       alt={`Sony Logo ${num}`}
                       className="w-full h-auto max-h-28 object-contain filter transition-all duration-300 group-hover:brightness-110 group-hover:contrast-110"
                     />
@@ -191,7 +191,7 @@ const AppliedSolutionConcepts = () => {
           <div className="relative bg-gradient-to-br from-white/90 to-white/40 dark:from-gray-800/90 dark:to-gray-800/40 rounded-3xl p-8 shadow-lg backdrop-blur-sm border border-white/20 dark:border-gray-700/20">
             <div className="absolute inset-0 bg-gradient-to-br from-blue-100/10 via-purple-100/10 to-pink-100/10 dark:from-blue-900/10 dark:via-purple-900/10 dark:to-pink-900/10 rounded-3xl"></div>
             <img
-              src="public/Overall.png"
+              src=" Overall.png"
               alt="Architecture Overview"
               className="w-full h-auto object-contain rounded-2xl shadow-md"
             />

@@ -14,8 +14,8 @@
           "title": "KD-Tree Nearest-Neighbor Search for Low-Latency Player Matching",
           "concept": "KD-Tree Nearest-Neighbor Search",
           "application": "Accelerates player searches by organizing the matchmaking pool into a 2D space (skill × latency). Splits alternate axes to prune irrelevant players during queries, reducing comparisons from O(n) to O(log n). Ideal for Sony's battle royale or FPS titles where regional latency and skill parity are critical.",
-          "imageUrl": "public/KD-Tree.png",
-          "workflowUrl": "public/1.1.png",
+          "imageUrl": " KD-Tree.png",
+          "workflowUrl": " 1.1.png",
           "advantages": [
             "Scalability: Handles 1M+ players",
             "Adaptive: Auto-rebalances tree as players join/leave",
@@ -54,8 +54,8 @@
           "title": "Segment Tree for Dynamic Skill Updates",
           "concept": "Segment Tree for Dynamic Skill Updates",
           "application": "Maintains a real-time skill hierarchy via a Segment Tree, enabling O(log n) updates and range queries (e.g., \"find all players with skill 50–60\"). Critical for Sony's ranked modes where skill inflation/deflation must be reflected instantly.",
-          "imageUrl": "public/segement-tree.png",
-          "workflowUrl": "public/1.2.png",
+          "imageUrl": " segement-tree.png",
+          "workflowUrl": " 1.2.png",
           "advantages": [
             "Real-time sync: No batch processing needed",
             "Precision: Avoids \"skill drift\" seen in ELO-only systems"
@@ -93,8 +93,8 @@
           "title": "Stable Marriage Problem for Team Balancing",
           "concept": "Stable Marriage Problem for Team Balancing",
           "application": "Uses the Gale-Shapley algorithm to pair players into teams based on role preferences (e.g., healer + tank) and skill complementarity. Ensures no player-team pair would mutually prefer each other over their current match—a key feature for Sony's cooperative RPGs/esports.",
-          "imageUrl": "public/StableMarriage.png",
-          "workflowUrl": "public/1.3.png",
+          "imageUrl": " StableMarriage.png",
+          "workflowUrl": " 1.3.png",
           "advantages": [
             "Stability: Eliminates \"unfair team\" grievances",
             "Flexibility: Incorporates role weights (e.g., priority for healers)"
@@ -176,8 +176,8 @@
           "title": "Persistent Segment Tree for Historical Data Analysis",
           "concept": "Persistent Segment Tree",
           "application": "Tracks leaderboard state across time, enabling queries like \"Show top 10 players at the end of last season.\" Each update creates a new version of the tree, preserving past states without duplication. Critical for Sony's replay/audit features.",
-          "imageUrl": "public/Persistent-Segment-Tree.png",
-          "workflowUrl": "public/2.1.png",
+          "imageUrl": " Persistent-Segment-Tree.png",
+          "workflowUrl": " 2.1.png",
           "advantages": [
             "Temporal precision: Compare leaderboards across arbitrary timestamps",
             "Space-efficient: Shares unchanged nodes between versions (O(log n) per update)"
@@ -215,8 +215,8 @@
           "title": "Fenwick Tree for Real-Time Score Aggregation",
           "concept": "Fenwick Tree",
           "application": "Maintains prefix sums of player scores for instant rank calculations (e.g., \"How many players are within 100 points of the leader?\"). Supports O(log n) point updates (e.g., score changes) and prefix queries.",
-          "imageUrl": "public/Fenwick-Tree.png",
-          "workflowUrl": "public/2.2.png",
+          "imageUrl": " Fenwick-Tree.png",
+          "workflowUrl": " 2.2.png",
           "advantages": [
             "Low-latency",
             "Embeddable: Lightweight (array-based) for edge devices"
@@ -254,8 +254,8 @@
           "title": "MAX Heap for Top-K Player Retrieval",
           "concept": "MAX Heap",
           "application": "Provides O(1) access to the top-ranked player and O(log n) insertions/deletions. Ideal for Sony's live leaderboards where the \"top 100\" must refresh instantly.",
-          "imageUrl": "public/Max-Heap.png",
-          "workflowUrl": "public/2.3.png",
+          "imageUrl": " Max-Heap.png",
+          "workflowUrl": " 2.3.png",
           "advantages": [
             "Real-time UI updates: Sub-millisecond top-K retrieval",
             "Scalability: Independent of total player count (focuses on leaders only)"
@@ -337,8 +337,8 @@
           "title": "Longest Common Subsequence (LCS) for Behavioral Analysis",
           "concept": "Longest Common Subsequence",
           "application": "Detects suspicious patterns in user transaction sequences by comparing against known fraud patterns. Adapts the classic LCS algorithm to handle weighted matches, giving higher scores to high-risk transaction types.",
-          "imageUrl": "public/LCS.png",
-          "workflowUrl": "public/3.1.png",
+          "imageUrl": " LCS.png",
+          "workflowUrl": " 3.1.png",
           "advantages": [
             "Pattern Recognition: high accuracy on known fraud sequences",
             "Adaptability: Can update fraud patterns without code changes",
@@ -372,8 +372,8 @@
           "title": "Boruvka's Algorithm for Fraud Ring Detection",
           "concept": "Boruvka's Algorithm for Fraud Ring Detection",
           "application": "Identifies coordinated fraud by clustering users who share devices/IPs into a Minimum Spanning Tree (MST). Isolates dense subgraphs (e.g., 10 users linked to one device) as fraud rings.",
-          "imageUrl": "public/Boruvka.png",
-          "workflowUrl": "public/3.2.png",
+          "imageUrl": " Boruvka.png",
+          "workflowUrl": " 3.2.png",
           "advantages": [
             "Scalability: Processes large number of edges in O(E log V) time.",
             "Uncovers Collusion: Detects \"money mule\" networks."
@@ -406,8 +406,8 @@
           "title": "Fermat's Little Theorem for Data Integrity",
           "concept": "Fermat's Little Theorem for Secure Hashing",
           "application": "Generates tamper-proof hashes of transaction data (e.g., \"User123:$100:PlayStationStore\") using modular exponentiation (a^(p-1) ≡ 1 mod p). Enables quick integrity checks without storing raw data.",
-          "imageUrl": "public/fermat.png",
-          "workflowUrl": "public/3.3.png",
+          "imageUrl": " fermat.png",
+          "workflowUrl": " 3.3.png",
           "advantages": [
             "Privacy: No PII storage (only hashes).",
             "Speed: O(1) verification via modular arithmetic."
@@ -488,8 +488,8 @@
           "title": "Mo's Algorithm for Batch Processing",
           "concept": "Mo's Algorithm",
           "application": "Groups tickets into √n-sized blocks and reorders queries to maximize cache reuse when detecting similar issues (e.g., \"PS5 controller drift\"). This technique optimizes ticket clustering by sorting queries to exploit temporal locality, reducing processing overhead. It supports the solution by efficiently grouping related tickets, minimizing redundant agent effort. The approach aligns with real-world ticket surges, such as post-update issue spikes.",
-          "imageUrl": "public/Mo.png",
-          "workflowUrl": "public/4.1.png",
+          "imageUrl": " Mo.png",
+          "workflowUrl": " 4.1.png",
           "advantages": [
             "Offline Efficiency: fewer live agent interventions",
             "Scalability: O(n√n) vs. O(n²) for brute-force clustering"
@@ -522,8 +522,8 @@
           "title": "Longest Common Substring (LCS) for Duplicate Detection",
           "concept": "Longest Common Substring",
           "application": "Identifies near-identical tickets (e.g., \"PSN login failed\" vs. \"Can't sign in to PSN\") by finding maximal shared substrings. This method uses dynamic programming to detect duplicate or similar tickets, consolidating them into master tickets. It supports the solution by reducing agent workload through automated issue merging. The technique ensures precise identification of recurring problems, enhancing support efficiency. Auto-merges duplicates into master tickets, reducing agent workload.",
-          "imageUrl": "public/LCString.png",
-          "workflowUrl": "public/4.2.png",
+          "imageUrl": " LCString.png",
+          "workflowUrl": " 4.2.png",
           "advantages": [
             "Precision: Ignores superficial differences (e.g., typos)",
             "Resource Savings: fewer redundant tickets"
@@ -556,8 +556,8 @@
           "title": "A* Search for Optimal Ticket Routing",
           "concept": "A* Search",
           "application": "Routes tickets through a team-skill graph where nodes are agents and edges are skill-urgency matches. Uses g(n) = Current queue load of agent, h(n) = Heuristic of agent's expertise match (e.g., \"Level 3 Networking\"). Minimizes total resolution latency by prioritizing both skill fit and availability.",
-          "imageUrl": "public/AStar.png",
-          "workflowUrl": "public/4.3.png",
+          "imageUrl": " AStar.png",
+          "workflowUrl": " 4.3.png",
           "advantages": [
             "Balanced Loads: Prevents agent burnout (vs. pure round-robin)",
             "Critical-Item Priority: Escalates VIP/outage tickets faster"
@@ -638,8 +638,8 @@
           "title": "PageRank for Influence-Based Discovery",
           "concept": "PageRank",
           "application": "Ranks games based on their network centrality in user-game interaction graphs, giving weight to premium users' preferences. This approach models user-game interactions as a graph, identifying influential titles through iterative ranking. It supports the solution by prioritizing games with strong social traction, enhancing discovery for PSN users. The weighted influence of premium users ensures recommendations align with high-value player preferences. Surfaces trending titles that standard popularity metrics miss.",
-          "imageUrl": "public/PageRank.png",
-          "workflowUrl": "public/5.1.png",
+          "imageUrl": " PageRank.png",
+          "workflowUrl": " 5.1.png",
           "advantages": [
             "Better niche title discovery vs. raw playcount rankings",
             "Logarithmic updates for real-time freshness"
@@ -672,8 +672,8 @@
           "title": "0/1 Knapsack for Playtime Optimization",
           "concept": "0/1 Knapsack",
           "application": "Models game recommendations as: Capacity = User's weekly playtime (e.g., 10 hours); Items = Games with (completion time, predicted enjoyment). This technique uses dynamic programming to select games that maximize enjoyment within time constraints. It supports the solution by tailoring recommendations to fit individual user schedules, reducing burnout. The approach ensures optimal game bundles for PSN's diverse player base.",
-          "imageUrl": "public/knapsack.png",
-          "workflowUrl": "public/5.2.png",
+          "imageUrl": " knapsack.png",
+          "workflowUrl": " 5.2.png",
           "advantages": [
             "Lower burnout rate by avoiding over-recommendation",
             "O(nW) complexity (W = max playtime)"
@@ -706,8 +706,8 @@
           "title": "Sparse Table for Real-Time Trend Detection",
           "concept": "Sparse Table",
           "application": "Answers queries like \"Top 5 RPGs in Europe (last 4h)\" in O(1) time via precomputed log-interval aggregates. This approach leverages sparse tables to efficiently handle range queries on massive datasets, enabling rapid identification of trending games by region and genre. By preprocessing play data into logarithmic intervals, it ensures instant responses to dynamic queries, critical for real-time recommendations on PSN. The technique supports the solution by providing up-to-date insights into player behavior, enhancing the relevance of personalized game suggestions.",
-          "imageUrl": "public/Sparse-Table.png",
-          "workflowUrl": "public/5.3.png",
+          "imageUrl": " Sparse-Table.png",
+          "workflowUrl": " 5.3.png",
           "advantages": [
             "Faster trend detection vs. SQL window functions",
             "O(1) queries after O(n log n) preprocess"
@@ -784,8 +784,8 @@
           "title": "Min-Cut Max-Flow (Ford-Fulkerson) for Server Load Balancing",
           "concept": "Min-Cut Max-Flow",
           "application": "Models PlayStation's server network as a flow graph, where edge weights represent available bandwidth. Dynamically reroutes player traffic during outages or congestion to maximize throughput while minimizing latency.",
-          "imageUrl": "public/FF.png",
-          "workflowUrl": "public/6.1.png",
+          "imageUrl": " FF.png",
+          "workflowUrl": " 6.1.png",
           "advantages": [
             "Efficiency: Handles large number of player spikes during exclusives launches",
             "Precision: Considers actual bandwidth constraints (unlike round-robin DNS)",
@@ -824,8 +824,8 @@
           "title": "Square-Root Decomposition for QoS Monitoring",
           "concept": "Square-Root Decomposition",
           "application": "Splits latency metrics into √n blocks to detect jitter anomalies in O(√n) time. Critical for maintaining 4K/120Hz streams with imperceptible lag.",
-          "imageUrl": "public/sqrt.png",
-          "workflowUrl": "public/6.2.png",
+          "imageUrl": " sqrt.png",
+          "workflowUrl": " 6.2.png",
           "advantages": [
             "Speed: lower CPU vs. sliding windows",
             "Resolution: very low granularity for gaming",
@@ -864,8 +864,8 @@
           "title": "Johnson-Trotter for A/B Test Sequencing",
           "concept": "Johnson-Trotter Algorithm",
           "application": "Generates all permutations of codec configurations (H.265/AV1/VP9) to eliminate ordering bias in performance tests. Ensures statistically valid comparisons.",
-          "imageUrl": "public/JT.png",
-          "workflowUrl": "public/6.3.png",
+          "imageUrl": " JT.png",
+          "workflowUrl": " 6.3.png",
           "advantages": [
             "Accuracy: fewer false positives vs. random sequencing",
             "Completeness: Tests all possible config orders",
@@ -953,8 +953,8 @@
           "title": "Queue-Based Command Synchronization for Device Groups",
           "concept": "Priority Queue",
           "application": "Uses a priority queue to serialize commands (e.g., \"volume up\") across devices with varying processing speeds. High-priority devices (e.g., Sony Bravia TVs) execute first, while slower devices (e.g., legacy speakers) synchronize via ACK signals.",
-          "imageUrl": "public/Pqueue.png",
-          "workflowUrl": "public/7.1.png",
+          "imageUrl": " Pqueue.png",
+          "workflowUrl": " 7.1.png",
           "advantages": [
             "Race Avoidance: No command collisions (e.g., two volume commands interleaving)",
             "Priority Handling: Critical devices (e.g., AV receivers) act first",
@@ -993,8 +993,8 @@
           "title": "Linked List for Device Topology Chains",
           "concept": "Circular Linked List",
           "application": "Models daisy-chained devices (e.g., smart lights in a loop) as a circular linked list. Propagates commands unidirectionally with hop counters to prevent infinite loops.",
-          "imageUrl": "public/CLL.png",
-          "workflowUrl": "public/7.2.png",
+          "imageUrl": " CLL.png",
+          "workflowUrl": " 7.2.png",
           "advantages": [
             "Decentralized: No master node required",
             "Loop Safety: Hop counters prevent infinite cycles",
@@ -1033,8 +1033,8 @@
           "title": "Two-Stack Protocol for Undo/Redo in Group Actions",
           "concept": "Double Stack Architecture",
           "application": "Maintains two stacks (undo/redo) to revert or replay group commands. Each stack stores snapshots of device states (e.g., brightness levels) before command execution.",
-          "imageUrl": "public/stack.png",
-          "workflowUrl": "public/7.3.png",
+          "imageUrl": " stack.png",
+          "workflowUrl": " 7.3.png",
           "advantages": [
             "Atomic Reverts: Single operation reverts entire group",
             "Idempotence: Repeated undos/redos won't corrupt state",
@@ -1095,8 +1095,8 @@
           "title": "XOR-Based Region Deduplication",
           "concept": "XOR Hashing",
           "application": "Uses XOR hashing to flag overlapping audience segments between regions (e.g., US-Canada bilingual viewers). Each region's audience is hashed into a compact XOR signature; collisions indicate redundancy.",
-          "imageUrl": "public/XOR.png",
-          "workflowUrl": "public/8.1.png",
+          "imageUrl": " XOR.png",
+          "workflowUrl": " 8.1.png",
           "advantages": [
             "Efficiency: O(1) overlap checks via XOR comparisons",
             "Privacy: Hashes anonymize raw audience data",
@@ -1135,8 +1135,8 @@
           "title": "Pascal's Triangle for Tiered Pricing",
           "concept": "Pascal's Triangle with Modular Arithmetic",
           "application": "Precomputes all possible k-region discount combinations using Pascal's Triangle. Applies Fermat's Little Theorem for modulo division to handle large numbers (e.g., 20% off 50 regions).",
-          "imageUrl": "public/pascal.png",
-          "workflowUrl": "public/8.2.png",
+          "imageUrl": " pascal.png",
+          "workflowUrl": " 8.2.png",
           "advantages": [
             "Instant Lookups: O(1) discount calculations",
             "Combinatorial Coverage: All 2^n combinations precomputed",
@@ -1175,8 +1175,8 @@
           "title": "2D Kadane for Optimal Subregion Licensing",
           "concept": "2D Kadane's Algorithm",
           "application": "Finds the most profitable rectangular spatiotemporal bundle (e.g., \"Scandinavia + Germany for Q3 2024\") by treating regions and time periods as a 2D profit matrix.",
-          "imageUrl": "public/2DK.png",
-          "workflowUrl": "public/8.3.png",
+          "imageUrl": " 2DK.png",
+          "workflowUrl": " 8.3.png",
           "advantages": [
             "Precision: Pinpoints exact subregion/time windows",
             "Dynamic Updates: O(m²n) recomputation for new data",
@@ -1250,8 +1250,8 @@
           "title": "Stolen Values DP (Core Logic)",
           "concept": "Dynamic Programming",
           "application": "Maximizes usable chips in a wafer row by strategically skipping adjacent defects. Models the problem similarly to the House Robber DP approach, where selecting a chip invalidates its neighbors.",
-          "imageUrl": "public/StolenVal.png",
-          "workflowUrl": "public/9.1.png",
+          "imageUrl": " StolenVal.png",
+          "workflowUrl": " 9.1.png",
           "advantages": [
             "Optimality: Guarantees maximum yield for linear defect patterns",
             "Efficiency: O(n) runtime with O(n) space (optimizable to O(1))"
@@ -1284,8 +1284,8 @@
           "title": "Grouped Defect Clustering (DP + Sliding Window)",
           "concept": "Sliding Window with Dynamic Programming",
           "application": "Handles contiguous defect blocks (common in fabrication) by treating them as single \"super defects,\" reducing problem complexity.",
-          "imageUrl": "public/SlidingW.png",
-          "workflowUrl": "public/9.2.png",
+          "imageUrl": " SlidingW.png",
+          "workflowUrl": " 9.2.png",
           "advantages": [
             "Speedup: Reduces DP input size for clustered defects",
             "Practicality: Mirrors real-world defect distributions"
