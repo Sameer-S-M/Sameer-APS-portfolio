@@ -14,10 +14,10 @@
           "title": "KD-Tree Nearest-Neighbor Search for Low-Latency Player Matching",
           "concept": "KD-Tree Nearest-Neighbor Search",
           "application": "Accelerates player searches by organizing the matchmaking pool into a 2D space (skill × latency). Splits alternate axes to prune irrelevant players during queries, reducing comparisons from O(n) to O(log n). Ideal for Sony's battle royale or FPS titles where regional latency and skill parity are critical.",
-          "imageUrl": "/Sameer-APS-portfolio/KD-Tree.png",
+          "imageUrl": "/Sameer-APS-portfolio/KD-tree.png",
           "workflowUrl": "/Sameer-APS-portfolio/1.1.png",
           "advantages": [
-            "Scalability: Handles 1M+ players",
+            "Scalability: Handles large number of players",
             "Adaptive: Auto-rebalances tree as players join/leave",
             "Worst-case mitigation: Falls back to O(n) only with extreme skill skew"
           ],
